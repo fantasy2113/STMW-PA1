@@ -5,8 +5,13 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReadXMLFile {
+    class Item {}
+
+    static List<Item> items = new ArrayList<>();
 
     public static void main(String argv[]) {
 
