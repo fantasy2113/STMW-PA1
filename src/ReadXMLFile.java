@@ -10,15 +10,14 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class ReadXMLFile {
     private final List<Item> items = new ArrayList<>();
     private final List<User> users = new ArrayList<>();
     private final List<Bid> bids = new ArrayList<>();
     private final List<Location> locations = new ArrayList<>();
+    private final Set<String> bidders = new HashSet<>();
 
     public static void main(String[] args) {
         ReadXMLFile readXMLFile = new ReadXMLFile();
@@ -39,6 +38,10 @@ public class ReadXMLFile {
         System.out.println("Locations: " + locations.size());
         System.out.println("Users: " + users.size());
         System.out.println("Bids: " + bids.size());
+        for (Bid bid : bids) {
+            bidders.add(bid.user_id);
+        }
+        System.out.println("Bidders: " + bidders.size());
     }
 
     private void computeFile(String file) {
