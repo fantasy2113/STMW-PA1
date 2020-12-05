@@ -120,7 +120,7 @@ public class MyDOM {
         item.user_id = sellerEle.getAttribute("UserID");
         item.name = ele.getElementsByTagName("Name").item(0).getFirstChild().getNodeValue();
         item.currently = getValueAsDouble(ele, "Currently");
-        item.first_did = getValueAsDouble(ele.getElementsByTagName("First_Bid").item(0).getFirstChild().getNodeValue());
+        item.first_bid = getValueAsDouble(ele.getElementsByTagName("First_Bid").item(0).getFirstChild().getNodeValue());
         item.number_of_bids = getValueAsInteger(ele.getElementsByTagName("Number_of_Bids").item(0).getFirstChild().getNodeValue());
         item.country = getValue(ele, "Country");
         item.started = ele.getElementsByTagName("Started").item(0).getFirstChild().getNodeValue();
@@ -255,7 +255,7 @@ public class MyDOM {
         String user_id = "";
         String name = "";
         double currently;
-        double first_did;
+        double first_bid;
         int number_of_bids;
         String country = "";
         String started = "";
@@ -277,12 +277,12 @@ public class MyDOM {
 
         @Override
         public String toString() {
-            return id + ";" + user_id + ";" + name + ";" + currently + ";" + first_did + ";" + number_of_bids + ";" + country + ";" + started + ";" + ends + ";" + description;
+            return id + ";" + user_id + ";" + name + ";" + currently + ";" + first_bid + ";" + number_of_bids + ";" + country + ";" + started + ";" + ends + ";" + description;
         }
 
         @Override
         public String getHeaderLine() {
-            return "id;user_id;name;currently;first_did;number_of_bids;country;started;ends;description";
+            return "id;user_id;name;currently;first_bid;number_of_bids;country;started;ends;description";
         }
 
         @Override
