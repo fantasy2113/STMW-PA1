@@ -5,7 +5,11 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.File;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -101,9 +105,16 @@ public class ReadXMLFile {
     }
 
     private void addBids(Element element, long itemId) {
-        NodeList bidsNodes = element.getElementsByTagName("Bids");
-        for (int i = 0; i < bidsNodes.getLength(); i++) {
-
+        NodeList bidNodes = ((Element) element.getElementsByTagName("Bids").item(0)).getElementsByTagName("Bid");
+        for (int i = 0; i < bidNodes.getLength(); i++) {
+            Bid bid = new Bid();
+            Element bidElement = (Element) bidNodes.item(i);
+            Element bidderElement = (Element) bidElement.getElementsByTagName("Bidder").item(0);
+            bid.user_id = getValueAsString(bidderElement, "UserID");
+            bid.item_id = itemId;
+            bid.time = bidElement.getElementsByTagName("Time").item(0).getFirstChild().getNodeValue();
+            bid.amount = getValueAsDouble(bidElement.getElementsByTagName("Amount").item(0).getFirstChild().getNodeValue());
+            isAddBid(bid);
         }
     }
 
@@ -151,7 +162,15 @@ public class ReadXMLFile {
 
     private double getValueAsDouble(Element element, String attribute) {
         String value = element.getAttribute(attribute);
-        return (!Objects.equals(value, "")) ? Double.parseDouble(value.replace("$", "")) : 0;
+        return (!Objects.equals(value, "")) ? Double.parseDouble(value
+                .replace("$", "")
+                .replace(",", "")) : 0;
+    }
+
+    private double getValueAsDouble(String value) {
+        return (!Objects.equals(value, "")) ? Double.parseDouble(value
+                .replace("$", "")
+                .replace(",", "")) : 0;
     }
 
     private class Location {
@@ -237,6 +256,25 @@ public class ReadXMLFile {
         public int hashCode() {
             return Objects.hash(user_id, item_id, time);
         }
+    }
+
+    private String asString(Node node) {
+        StringWriter writer = new StringWriter();
+        try {
+            Transformer trans = TransformerFactory.newInstance().newTransformer();
+            // @checkstyle MultipleStringLiterals (1 line)
+            trans.setOutputProperty(OutputKeys.INDENT, "yes");
+            trans.setOutputProperty(OutputKeys.VERSION, "1.0");
+            if (!(node instanceof Document)) {
+                trans.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+            }
+            trans.transform(new DOMSource(node), new StreamResult(writer));
+        } catch (final TransformerConfigurationException ex) {
+            throw new IllegalStateException(ex);
+        } catch (final TransformerException ex) {
+            throw new IllegalArgumentException(ex);
+        }
+        return writer.toString();
     }
 
 }
