@@ -41,3 +41,12 @@ CREATE TABLE `locations`
     UNIQUE KEY `item_id_UNIQUE` (`item_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = latin1;
+
+CREATE TABLE `categories`
+(
+    `id`   int(11) NOT NULL,
+    `name` varchar(64) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `id_UNIQUE` (`id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = latin1;

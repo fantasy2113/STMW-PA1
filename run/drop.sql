@@ -4,3 +4,6 @@ USE ad;
 DROP TABLE IF EXISTS `items`;
 DROP TABLE IF EXISTS `bids`;
 DROP TABLE IF EXISTS `locations`;
+DROP TABLE IF EXISTS `categories`;
+DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `items_categories`;

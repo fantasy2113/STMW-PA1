@@ -19,3 +19,4 @@ rm categories.csv
 rm items.csv
 rm items_categories.csv
 rm locations.csv
+rm users.csv
