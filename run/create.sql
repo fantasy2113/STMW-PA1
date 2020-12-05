@@ -1,0 +1,32 @@
+CREATE DATABASE IF NOT EXISTS ad;
+USE ad;
+
+CREATE TABLE `items`
+(
+    `id`             int(11) NOT NULL,
+    `user_id`        varchar(64)   DEFAULT NULL,
+    `name`           varchar(128)  DEFAULT NULL,
+    `currently`      decimal(8, 2) DEFAULT NULL,
+    `first_bid`      decimal(8, 2) DEFAULT NULL,
+    `number_of_bids` int(11)       DEFAULT NULL,
+    `country`        varchar(64)   DEFAULT NULL,
+    `started`        datetime      DEFAULT NULL,
+    `ends`           datetime      DEFAULT NULL,
+    `description`    varchar(4000) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `id_UNIQUE` (`id`),
+    KEY `user_id` (`user_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = latin1;
+
+CREATE TABLE `bids`
+(
+    `id`      int(11)     NOT NULL,
+    `user_id` varchar(64) NOT NULL,
+    `item_id` int(11)     NOT NULL,
+    `time`    datetime      DEFAULT NULL,
+    `amount`  decimal(8, 2) DEFAULT NULL,
+    PRIMARY KEY (`id`, `user_id`, `item_id`),
+    UNIQUE KEY `id_UNIQUE` (`id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = latin1
