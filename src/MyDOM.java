@@ -30,7 +30,7 @@ public class MyDOM {
 
         List<String> files = new ArrayList<>();
         for (int i = 0; i < 40; i++) {
-            files.add("ebay-data/items_{#}.xml".replace("{#}", String.valueOf(i)));
+            files.add("ebay_data/items-{#}.xml".replace("{#}", String.valueOf(i)));
         }
 
         myDOM.run(files);
