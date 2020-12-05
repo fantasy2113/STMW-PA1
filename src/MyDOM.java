@@ -74,8 +74,9 @@ public class MyDOM {
         System.out.print(">");
         ICsvFile first = data.iterator().next();
         Path file = Paths.get(first.getFileName());
-        Set<String> lines = new HashSet<>();
+        List<String> lines = new ArrayList<>();
         lines.add(first.getHeaderLine());
+        lines.add(first.toString());
         for (ICsvFile item : data) {
             lines.add(item.toString());
         }
@@ -163,7 +164,7 @@ public class MyDOM {
             Element bidderEle = (Element) bidEle.getElementsByTagName("Bidder").item(0);
             bid.user_id = bidderEle.getAttribute("UserID");
             bid.item_id = itemId;
-            bid.time = bidEle.getElementsByTagName("Time").item(0).getFirstChild().getNodeValue();
+            bid.time = getTimestampAsString(bidEle.getElementsByTagName("Time").item(0).getFirstChild().getNodeValue());
             bid.amount = getValueAsDouble(bidEle.getElementsByTagName("Amount").item(0).getFirstChild().getNodeValue());
             bids.add(bid);
         }
@@ -220,7 +221,7 @@ public class MyDOM {
     private String getTimestampAsString(String input) {
         try {
             DateFormat inFormatter = new SimpleDateFormat("MMM-dd-yy HH:mm:ss", Locale.ENGLISH);
-            DateFormat outFormatter = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss", Locale.ENGLISH);
+            DateFormat outFormatter = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss aa", Locale.ENGLISH);
             Date date = inFormatter.parse(input);
             String output = outFormatter.format(date);
             return output;
@@ -256,8 +257,13 @@ public class MyDOM {
         }
 
         @Override
+        public String toString() {
+            return item_id + ";" + place + ";" + latitude + ";" + longitude;
+        }
+
+        @Override
         public String getHeaderLine() {
-            return "null";
+            return "item_id;place;latitude;longitude";
         }
 
         @Override
@@ -327,8 +333,13 @@ public class MyDOM {
         }
 
         @Override
+        public String toString() {
+            return user_id + ";" + rating + ";" + country + ";" + place;
+        }
+
+        @Override
         public String getHeaderLine() {
-            return "null";
+            return "user_id;rating;country;place";
         }
 
         @Override
@@ -357,8 +368,13 @@ public class MyDOM {
         }
 
         @Override
+        public String toString() {
+            return user_id + ";" + item_id + ";" + time + ";" + amount;
+        }
+
+        @Override
         public String getHeaderLine() {
-            return "null";
+            return "user_id;item_id;time;amount";
         }
 
         @Override
@@ -385,8 +401,13 @@ public class MyDOM {
         }
 
         @Override
+        public String toString() {
+            return id + ";" + name;
+        }
+
+        @Override
         public String getHeaderLine() {
-            return "null";
+            return "id;name";
         }
 
         @Override
@@ -413,8 +434,13 @@ public class MyDOM {
         }
 
         @Override
+        public String toString() {
+            return item_id + ";" + category_id;
+        }
+
+        @Override
         public String getHeaderLine() {
-            return "null";
+            return "item_id;category_id";
         }
 
         @Override
