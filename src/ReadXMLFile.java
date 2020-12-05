@@ -19,6 +19,7 @@ public class ReadXMLFile {
     private final List<Location> locations = new ArrayList<>();
     private final List<Category> categories = new ArrayList<>();
     private final List<ItemCategory> itemsCategories = new ArrayList<>();
+    private final List<ItemUser> itemsUsers = new ArrayList<>();
     private final Set<String> bidders = new HashSet<>();
 
     public static void main(String[] args) {
@@ -73,15 +74,14 @@ public class ReadXMLFile {
 
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element itemElement = (Element) node;
-
                     Item item = mapToItem(itemElement);
                     if (!items.contains(item)) {
                         items.add(item);
                         isAddLocation(mapToLocation(itemElement, item.id));
+                        isAddUser(mapToUser(itemElement));
                         addBids(itemElement, item.id);
                         addCategories(itemElement, item.id);
                     }
-                    isAddUser(mapToUser(itemElement));
                 }
             }
         } catch (Exception e) {
@@ -105,7 +105,8 @@ public class ReadXMLFile {
 
     private Location mapToLocation(Element ele, long itemId) {
         Location location = new Location();
-        Element locationEle = (Element) ele.getElementsByTagName("Location").item(0);
+        NodeList location1 = ele.getElementsByTagName("Location");
+        Element locationEle = (Element) location1.item(location1.getLength() - 1);
         location.item_id = itemId;
         location.latitude = locationEle.getAttribute("Latitude");
         location.longitude = locationEle.getAttribute("Longitude");
@@ -241,12 +242,12 @@ public class ReadXMLFile {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Location location = (Location) o;
-            return item_id == location.item_id && Objects.equals(place, location.place) && Objects.equals(latitude, location.latitude) && Objects.equals(longitude, location.longitude);
+            return item_id == location.item_id;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(item_id, place, latitude, longitude);
+            return Objects.hash(item_id);
         }
     }
 
@@ -348,6 +349,24 @@ public class ReadXMLFile {
         @Override
         public int hashCode() {
             return Objects.hash(item_id, category_id);
+        }
+    }
+
+    private class ItemUser {
+        long item_id;
+        long user_id;
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ItemUser itemUser = (ItemUser) o;
+            return item_id == itemUser.item_id && user_id == itemUser.user_id;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(item_id, user_id);
         }
     }
 
