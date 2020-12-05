@@ -167,6 +167,7 @@ public class MyDOM {
             Element bidderEle = (Element) bidEle.getElementsByTagName("Bidder").item(0);
             bid.user_id = bidderEle.getAttribute("UserID");
             bid.item_id = itemId;
+            bid.id = Objects.hash(bid.user_id, itemId);
             bid.time = getTimestampAsString(bidEle.getElementsByTagName("Time").item(0).getFirstChild().getNodeValue());
             bid.amount = getValueAsDouble(bidEle.getElementsByTagName("Amount").item(0).getFirstChild().getNodeValue());
             bids.add(bid);
@@ -356,6 +357,7 @@ public class MyDOM {
     }
 
     private class Bid implements ICsvFile {
+        long id;
         String user_id = "";
         long item_id;
         String time = "";
@@ -366,22 +368,22 @@ public class MyDOM {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Bid bid = (Bid) o;
-            return Objects.equals(user_id, bid.user_id) && Objects.equals(item_id, bid.item_id) && Objects.equals(time, bid.time);
+            return id == bid.id && item_id == bid.item_id && Objects.equals(user_id, bid.user_id);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(user_id, item_id, time);
+            return Objects.hash(id, user_id, item_id);
         }
 
         @Override
         public String toString() {
-            return user_id + FS_TAB + item_id + FS_TAB + time + FS_TAB + amount;
+            return id + FS_TAB + user_id + FS_TAB + item_id + FS_TAB + time + FS_TAB + amount;
         }
 
         @Override
         public String getHeaderLine() {
-            return "user_id{fs}item_id{fs}time{fs}amount";
+            return "id{fs}user_id{fs}item_id{fs}time{fs}amount";
         }
 
         @Override
