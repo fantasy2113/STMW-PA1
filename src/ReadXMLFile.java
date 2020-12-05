@@ -12,6 +12,9 @@ import java.util.Objects;
 
 public class ReadXMLFile {
     private final List<Item> items = new ArrayList<>();
+    private final List<User> users = new ArrayList<>();
+    private final List<Bidder> bidders = new ArrayList<>();
+    private final List<Location> locations = new ArrayList<>();
 
     public static void main(String[] args) {
         ReadXMLFile readXMLFile = new ReadXMLFile();
@@ -28,7 +31,9 @@ public class ReadXMLFile {
         for (String file : files) {
             computeFile(file);
         }
-        System.out.println(items.size());
+        System.out.println("Items: " + items.size());
+        System.out.println("Locations: " + locations.size());
+        System.out.println("Users: " + users.size());
     }
 
     private void computeFile(String file) {
@@ -47,7 +52,13 @@ public class ReadXMLFile {
 
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) node;
-                    addItem(mapItem(element));
+
+                    Item item = mapToItem(element);
+                    if (!items.contains(item)) {
+                        items.add(item);
+                        isAddLocation(mapToLocation(element, item.id));
+                    }
+                    isAddUser(mapToUser(element));
                 }
             }
         } catch (Exception e) {
@@ -55,7 +66,7 @@ public class ReadXMLFile {
         }
     }
 
-    private Item mapItem(Element element) {
+    private Item mapToItem(Element element) {
         Item item = new Item();
         item.id = getValueAsInteger(element, "ItemID");
         item.name = getValueAsString(element, "Name");
@@ -69,10 +80,46 @@ public class ReadXMLFile {
         return item;
     }
 
-    private void addItem(Item item) {
+    private Location mapToLocation(Element element, long itemId) {
+        Location location = new Location();
+        Element locationElement = (Element) element.getElementsByTagName("Location").item(0);
+        location.item_id = itemId;
+        location.latitude = getValueAsString(locationElement, "Latitude");
+        location.longitude = getValueAsString(locationElement, "Longitude");
+        return location;
+    }
+
+    private User mapToUser(Element element) {
+        User user = new User();
+        Element seller = (Element) element.getElementsByTagName("Seller").item(0);
+        user.user_id = getValueAsString(seller, "UserID");
+        user.rating = getValueAsString(seller, "Rating");
+        user.country = getValueAsString(element, "Country");
+        return user;
+    }
+
+    private boolean isAddLocation(Location location) {
+        if (!locations.contains(location)) {
+            locations.add(location);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isAddItem(Item item) {
         if (!items.contains(item)) {
             items.add(item);
+            return true;
         }
+        return false;
+    }
+
+    private boolean isAddUser(User user) {
+        if (!users.contains(user)) {
+            users.add(user);
+            return true;
+        }
+        return false;
     }
 
     private String getValueAsString(Element element, String attribute) {
@@ -88,6 +135,26 @@ public class ReadXMLFile {
     private double getValueAsDouble(Element element, String attribute) {
         String value = element.getAttribute(attribute);
         return (!Objects.equals(value, "")) ? Double.parseDouble(value.replace("$", "")) : 0;
+    }
+
+    private class Location {
+        long item_id;
+        String place = "";
+        String latitude;
+        String longitude;
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Location location = (Location) o;
+            return item_id == location.item_id;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(item_id);
+        }
     }
 
     private class Item {
@@ -113,21 +180,29 @@ public class ReadXMLFile {
         public int hashCode() {
             return Objects.hash(id);
         }
+    }
+
+    private class User {
+        String user_id = "";
+        String rating = "";
+        String country = "";
 
         @Override
-        public String toString() {
-            return "Item{" +
-                    "id=" + id +
-                    ", name='" + name + '\'' +
-                    ", currently=" + currently +
-                    ", first_did=" + first_did +
-                    ", number_of_bids=" + number_of_bids +
-                    ", country='" + country + '\'' +
-                    ", started='" + started + '\'' +
-                    ", ends='" + ends + '\'' +
-                    ", description='" + description + '\'' +
-                    '}';
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            User user = (User) o;
+            return Objects.equals(user_id, user.user_id);
         }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(user_id);
+        }
+    }
+
+    private class Bidder {
+
     }
 
 }
