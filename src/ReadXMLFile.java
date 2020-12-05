@@ -35,14 +35,17 @@ public class ReadXMLFile {
 
     public void computeFiles(List<String> files) {
         for (String file : files) {
+            System.out.print("*");
             computeFile(file);
         }
+        System.out.println();
         System.out.println("Items: " + items.size());
         System.out.println("Locations: " + locations.size());
         System.out.println("Users: " + users.size());
         System.out.println("Bids: " + bids.size());
         System.out.println("Categories: " + categories.size());
         System.out.println("ItemsCategories: " + itemsCategories.size());
+        System.out.println("ItemsUsers: " + itemsUsers.size());
 
 
         for (Bid bid : bids) {
@@ -78,7 +81,7 @@ public class ReadXMLFile {
                     if (!items.contains(item)) {
                         items.add(item);
                         isAddLocation(mapToLocation(itemElement, item.id));
-                        isAddUser(mapToUser(itemElement));
+                        isAddUser(mapToUser(itemElement, item.user_id));
                         addBids(itemElement, item.id);
                         addCategories(itemElement, item.id);
                     }
@@ -90,8 +93,10 @@ public class ReadXMLFile {
     }
 
     private Item mapToItem(Element ele) {
+        Element sellerEle = (Element) ele.getElementsByTagName("Seller").item(0);
         Item item = new Item();
         item.id = getValueAsInteger(ele, "ItemID");
+        item.user_id = sellerEle.getAttribute("UserID");
         item.name = ele.getElementsByTagName("Name").item(0).getFirstChild().getNodeValue();
         item.currently = getValueAsDouble(ele, "Currently");
         item.first_did = getValueAsDouble(ele.getElementsByTagName("First_Bid").item(0).getFirstChild().getNodeValue());
@@ -114,13 +119,15 @@ public class ReadXMLFile {
         return location;
     }
 
-    private User mapToUser(Element ele) {
+    private User mapToUser(Element ele, String userId) {
         User user = new User();
         Element sellerEle = (Element) ele.getElementsByTagName("Seller").item(0);
-        user.user_id = sellerEle.getAttribute("UserID");
+        NodeList locations = ele.getElementsByTagName("Location");
+        NodeList countries = ele.getElementsByTagName("Country");
+        user.user_id = userId;
         user.rating = sellerEle.getAttribute("Rating");
-        user.country = ele.getElementsByTagName("Country").item(0).getFirstChild().getNodeValue();
-        user.place = ele.getElementsByTagName("Location").item(0).getFirstChild().getNodeValue();
+        user.country = countries.item(countries.getLength() - 1).getFirstChild().getNodeValue();
+        user.place = locations.item(locations.getLength() - 1).getFirstChild().getNodeValue();
         return user;
     }
 
@@ -150,6 +157,15 @@ public class ReadXMLFile {
             itemCategory.item_id = itemId;
             itemCategory.category_id = category.id;
             isAddItemCategory(itemCategory);
+        }
+    }
+
+    private void addItemUser(String userId, long itemId) {
+        ItemUser itemUser = new ItemUser();
+        itemUser.item_id = itemId;
+        itemUser.user_id = userId;
+        if (!itemsUsers.contains(itemUser)) {
+            itemsUsers.add(itemUser);
         }
     }
 
@@ -253,6 +269,7 @@ public class ReadXMLFile {
 
     private class Item {
         long id;
+        String user_id = "";
         String name = "";
         double currently;
         double first_did;
@@ -267,12 +284,12 @@ public class ReadXMLFile {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Item item = (Item) o;
-            return id == item.id && Objects.equals(name, item.name);
+            return id == item.id && Objects.equals(user_id, item.user_id);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(id, name);
+            return Objects.hash(id, user_id);
         }
     }
 
@@ -354,7 +371,7 @@ public class ReadXMLFile {
 
     private class ItemUser {
         long item_id;
-        long user_id;
+        String user_id = "";
 
         @Override
         public boolean equals(Object o) {
