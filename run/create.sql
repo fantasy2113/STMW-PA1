@@ -50,3 +50,14 @@ CREATE TABLE `categories`
     UNIQUE KEY `id_UNIQUE` (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = latin1;
+
+CREATE TABLE `users`
+(
+    `user_id` varchar(64) NOT NULL,
+    `rating`  int(11)     DEFAULT NULL,
+    `country` varchar(64) DEFAULT NULL,
+    `place`   varchar(64) DEFAULT NULL,
+    PRIMARY KEY (`user_id`),
+    UNIQUE KEY `user_id_UNIQUE` (`user_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = latin1;
