@@ -13,7 +13,7 @@ import java.util.Objects;
 public class ReadXMLFile {
     private final List<Item> items = new ArrayList<>();
     private final List<User> users = new ArrayList<>();
-    private final List<Bidder> bidders = new ArrayList<>();
+    private final List<Bid> bids = new ArrayList<>();
     private final List<Location> locations = new ArrayList<>();
 
     public static void main(String[] args) {
@@ -34,6 +34,7 @@ public class ReadXMLFile {
         System.out.println("Items: " + items.size());
         System.out.println("Locations: " + locations.size());
         System.out.println("Users: " + users.size());
+        System.out.println("Bids: " + bids.size());
     }
 
     private void computeFile(String file) {
@@ -51,14 +52,15 @@ public class ReadXMLFile {
                 Node node = nodeList.item(itemIndex);
 
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element element = (Element) node;
+                    Element itemElement = (Element) node;
 
-                    Item item = mapToItem(element);
+                    Item item = mapToItem(itemElement);
                     if (!items.contains(item)) {
                         items.add(item);
-                        isAddLocation(mapToLocation(element, item.id));
+                        isAddLocation(mapToLocation(itemElement, item.id));
+                        addBids(itemElement, item.id);
                     }
-                    isAddUser(mapToUser(element));
+                    isAddUser(mapToUser(itemElement));
                 }
             }
         } catch (Exception e) {
@@ -98,6 +100,13 @@ public class ReadXMLFile {
         return user;
     }
 
+    private void addBids(Element element, long itemId) {
+        NodeList bidsNodes = element.getElementsByTagName("Bids");
+        for (int i = 0; i < bidsNodes.getLength(); i++) {
+
+        }
+    }
+
     private boolean isAddLocation(Location location) {
         if (!locations.contains(location)) {
             locations.add(location);
@@ -109,6 +118,14 @@ public class ReadXMLFile {
     private boolean isAddItem(Item item) {
         if (!items.contains(item)) {
             items.add(item);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isAddBid(Bid bid) {
+        if (!bids.contains(bid)) {
+            bids.add(bid);
             return true;
         }
         return false;
@@ -186,6 +203,7 @@ public class ReadXMLFile {
         String user_id = "";
         String rating = "";
         String country = "";
+        String place = "";
 
         @Override
         public boolean equals(Object o) {
@@ -201,8 +219,24 @@ public class ReadXMLFile {
         }
     }
 
-    private class Bidder {
+    private class Bid {
+        String user_id = "";
+        long item_id;
+        String time = "";
+        double amount;
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Bid bid = (Bid) o;
+            return Objects.equals(user_id, bid.user_id) && Objects.equals(item_id, bid.item_id) && Objects.equals(time, bid.time);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(user_id, item_id, time);
+        }
     }
 
 }
