@@ -13,3 +13,9 @@ java MyDOM
 
 # Run the load.sql batch file to load the data
 mysql ad < load.sql
+
+rm bids.csv
+rm categories.csv
+rm items.csv
+rm items_categories.csv
+rm locations.csv

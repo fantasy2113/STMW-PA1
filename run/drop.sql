@@ -3,3 +3,4 @@ USE ad;
 
 DROP TABLE IF EXISTS `items`;
 DROP TABLE IF EXISTS `bids`;
+DROP TABLE IF EXISTS `locations`;

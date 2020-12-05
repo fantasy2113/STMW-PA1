@@ -29,4 +29,15 @@ CREATE TABLE `bids`
     PRIMARY KEY (`id`, `user_id`, `item_id`),
     UNIQUE KEY `id_UNIQUE` (`id`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = latin1
+  DEFAULT CHARSET = latin1;
+
+CREATE TABLE `locations`
+(
+    `item_id`   int(11) NOT NULL,
+    `place`     varchar(64) DEFAULT NULL,
+    `latitude`  varchar(64) DEFAULT NULL,
+    `longitude` varchar(64) DEFAULT NULL,
+    PRIMARY KEY (`item_id`),
+    UNIQUE KEY `item_id_UNIQUE` (`item_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = latin1;

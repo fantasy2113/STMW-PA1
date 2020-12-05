@@ -276,7 +276,7 @@ public class MyDOM {
 
         @Override
         public String getFileName() {
-            return "location.csv";
+            return "locations.csv";
         }
     }
 
