@@ -33,22 +33,17 @@ public class MyDOM {
     }
 
     public void run(List<String> files) {
-        System.out.println("File parsing...");
+        System.out.println("MyDOM - Run: ");
         for (String file : files) {
-            System.out.print("*");
             computeFile(file);
         }
         System.out.println();
-        System.out.println("File writing...");
         writeCsvFile(items);
         writeCsvFile(users);
         writeCsvFile(bids);
         writeCsvFile(locations);
         writeCsvFile(categories);
         writeCsvFile(itemsCategories);
-        System.out.println();
-        System.out.println("All done!");
-
 
         /*System.out.println();
         System.out.println("Items: " + items.size());
@@ -73,7 +68,7 @@ public class MyDOM {
     }
 
     private <T extends ICsvFile> void writeCsvFile(Iterable<T> data) {
-        System.out.print("*");
+        System.out.print(">");
         ICsvFile first = data.iterator().next();
         Path file = Paths.get(first.getFileName());
         Set<String> lines = new HashSet<>();
@@ -89,6 +84,7 @@ public class MyDOM {
     }
 
     private void computeFile(String file) {
+        System.out.print("<");
         try {
             File fXmlFile = new File(file);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
