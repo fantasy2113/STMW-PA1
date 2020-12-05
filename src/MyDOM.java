@@ -48,6 +48,7 @@ public class MyDOM {
         writeCsvFile(locations);
         writeCsvFile(categories);
         writeCsvFile(itemsCategories);
+        System.out.println();
 
         /*System.out.println();
         System.out.println("Items: " + items.size());
