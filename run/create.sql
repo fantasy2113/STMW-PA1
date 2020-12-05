@@ -61,3 +61,11 @@ CREATE TABLE `users`
     UNIQUE KEY `user_id_UNIQUE` (`user_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = latin1;
+
+CREATE TABLE `items_categories`
+(
+    `item_id`     int(11) NOT NULL,
+    `category_id` int(11) NOT NULL,
+    PRIMARY KEY (`item_id`, `category_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = latin1;
