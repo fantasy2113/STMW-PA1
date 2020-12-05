@@ -76,7 +76,6 @@ public class MyDOM {
         Path file = Paths.get(first.getFileName());
         List<String> lines = new ArrayList<>();
         lines.add(first.getHeaderLine());
-        lines.add(first.toString());
         for (ICsvFile item : data) {
             lines.add(item.toString());
         }
