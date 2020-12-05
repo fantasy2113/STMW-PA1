@@ -122,13 +122,15 @@ public class MyDOM {
         item.id = getValueAsInteger(ele, "ItemID");
         item.user_id = sellerEle.getAttribute("UserID");
         item.name = ele.getElementsByTagName("Name").item(0).getFirstChild().getNodeValue();
-        item.currently = getValueAsDouble(ele, "Currently");
+        item.currently = getValueAsDouble(ele.getElementsByTagName("Currently").item(0).getFirstChild().getNodeValue());
         item.first_bid = getValueAsDouble(ele.getElementsByTagName("First_Bid").item(0).getFirstChild().getNodeValue());
         item.number_of_bids = getValueAsInteger(ele.getElementsByTagName("Number_of_Bids").item(0).getFirstChild().getNodeValue());
         item.country = getValue(ele, "Country");
         item.started = getTimestampAsString(ele.getElementsByTagName("Started").item(0).getFirstChild().getNodeValue());
         item.ends = getTimestampAsString(ele.getElementsByTagName("Ends").item(0).getFirstChild().getNodeValue());
-        item.description = getValue(ele, "Description");
+        String description = getValue(ele, "Description");
+        description = description.length() > 4000 ? description.substring(0, 3999) : description;
+        item.description = description;
         return item;
     }
 
@@ -220,7 +222,7 @@ public class MyDOM {
     private String getTimestampAsString(String input) {
         try {
             DateFormat inFormatter = new SimpleDateFormat("MMM-dd-yy HH:mm:ss", Locale.ENGLISH);
-            DateFormat outFormatter = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss aa", Locale.ENGLISH);
+            DateFormat outFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
             Date date = inFormatter.parse(input);
             String output = outFormatter.format(date);
             return output;
@@ -281,7 +283,7 @@ public class MyDOM {
         String country = "";
         String started = "";
         String ends = "";
-        String description = "";
+        String description = "abc";
 
         @Override
         public boolean equals(Object o) {
