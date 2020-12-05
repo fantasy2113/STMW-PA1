@@ -10,7 +10,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
+
 
 public class MyDOM {
     private final Set<Item> items = new HashSet<>();
@@ -123,8 +126,8 @@ public class MyDOM {
         item.first_bid = getValueAsDouble(ele.getElementsByTagName("First_Bid").item(0).getFirstChild().getNodeValue());
         item.number_of_bids = getValueAsInteger(ele.getElementsByTagName("Number_of_Bids").item(0).getFirstChild().getNodeValue());
         item.country = getValue(ele, "Country");
-        item.started = ele.getElementsByTagName("Started").item(0).getFirstChild().getNodeValue();
-        item.ends = ele.getElementsByTagName("Ends").item(0).getFirstChild().getNodeValue();
+        item.started = getTimestampAsString(ele.getElementsByTagName("Started").item(0).getFirstChild().getNodeValue());
+        item.ends = getTimestampAsString(ele.getElementsByTagName("Ends").item(0).getFirstChild().getNodeValue());
         item.description = getValue(ele, "Description");
         return item;
     }
@@ -146,7 +149,7 @@ public class MyDOM {
         NodeList locations = ele.getElementsByTagName("Location");
         NodeList countries = ele.getElementsByTagName("Country");
         user.user_id = userId;
-        user.rating = sellerEle.getAttribute("Rating");
+        user.rating = getValueAsInteger(sellerEle.getAttribute("Rating"));
         user.country = countries.item(countries.getLength() - 1).getFirstChild().getNodeValue();
         user.place = locations.item(locations.getLength() - 1).getFirstChild().getNodeValue();
         return user;
@@ -212,6 +215,19 @@ public class MyDOM {
 
     private int getValueAsInteger(String value) {
         return (!Objects.equals(value, "")) ? Integer.parseInt(value) : 0;
+    }
+
+    private String getTimestampAsString(String input) {
+        try {
+            DateFormat inFormatter = new SimpleDateFormat("MMM-dd-yy HH:mm:ss", Locale.ENGLISH);
+            DateFormat outFormatter = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss", Locale.ENGLISH);
+            Date date = inFormatter.parse(input);
+            String output = outFormatter.format(date);
+            return output;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return input;
     }
 
     private interface ICsvFile {
@@ -293,7 +309,7 @@ public class MyDOM {
 
     private class User implements ICsvFile {
         String user_id = "";
-        String rating = "";
+        int rating;
         String country = "";
         String place = "";
 
