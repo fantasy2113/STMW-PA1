@@ -16,6 +16,7 @@ import java.util.*;
 
 
 public class MyDOM {
+    private static final String FS_TAB = "\t";
     private final Set<Item> items = new HashSet<>();
     private final Set<User> users = new HashSet<>();
     private final Set<Bid> bids = new HashSet<>();
@@ -75,7 +76,7 @@ public class MyDOM {
         ICsvFile first = data.iterator().next();
         Path file = Paths.get(first.getFileName());
         List<String> lines = new ArrayList<>();
-        lines.add(first.getHeaderLine());
+        lines.add(replaceFs(first.getHeaderLine()));
         for (ICsvFile item : data) {
             lines.add(item.toString());
         }
@@ -232,6 +233,10 @@ public class MyDOM {
         return input;
     }
 
+    public String replaceFs(String header) {
+        return header.replace("{fs}", FS_TAB);
+    }
+
     private interface ICsvFile {
         String getHeaderLine();
 
@@ -259,12 +264,12 @@ public class MyDOM {
 
         @Override
         public String toString() {
-            return item_id + ";" + place + ";" + latitude + ";" + longitude;
+            return item_id + FS_TAB + place + FS_TAB + latitude + FS_TAB + longitude;
         }
 
         @Override
         public String getHeaderLine() {
-            return "item_id;place;latitude;longitude";
+            return "item_id{fs}place{fs}latitude{fs}longitude";
         }
 
         @Override
@@ -283,7 +288,7 @@ public class MyDOM {
         String country = "";
         String started = "";
         String ends = "";
-        String description = "abc";
+        String description = "";
 
         @Override
         public boolean equals(Object o) {
@@ -300,12 +305,12 @@ public class MyDOM {
 
         @Override
         public String toString() {
-            return id + ";" + user_id + ";" + name + ";" + currently + ";" + first_bid + ";" + number_of_bids + ";" + country + ";" + started + ";" + ends + ";" + description;
+            return id + FS_TAB + user_id + FS_TAB + name + FS_TAB + currently + FS_TAB + first_bid + FS_TAB + number_of_bids + FS_TAB + country + FS_TAB + started + FS_TAB + ends + FS_TAB + description;
         }
 
         @Override
         public String getHeaderLine() {
-            return "id;user_id;name;currently;first_bid;number_of_bids;country;started;ends;description";
+            return "id{fs}user_id{fs}name{fs}currently{fs}first_bid{fs}number_of_bids{fs}country{fs}started{fs}ends{fs}description";
         }
 
         @Override
@@ -335,12 +340,12 @@ public class MyDOM {
 
         @Override
         public String toString() {
-            return user_id + ";" + rating + ";" + country + ";" + place;
+            return user_id + FS_TAB + rating + FS_TAB + country + FS_TAB + place;
         }
 
         @Override
         public String getHeaderLine() {
-            return "user_id;rating;country;place";
+            return "user_id{fs}rating{fs}country{fs}place";
         }
 
         @Override
@@ -370,12 +375,12 @@ public class MyDOM {
 
         @Override
         public String toString() {
-            return user_id + ";" + item_id + ";" + time + ";" + amount;
+            return user_id + FS_TAB + item_id + FS_TAB + time + FS_TAB + amount;
         }
 
         @Override
         public String getHeaderLine() {
-            return "user_id;item_id;time;amount";
+            return "user_id{fs}item_id{fs}time{fs}amount";
         }
 
         @Override
@@ -403,12 +408,12 @@ public class MyDOM {
 
         @Override
         public String toString() {
-            return id + ";" + name;
+            return id + FS_TAB + name;
         }
 
         @Override
         public String getHeaderLine() {
-            return "id;name";
+            return "id{fs}name";
         }
 
         @Override
@@ -436,12 +441,12 @@ public class MyDOM {
 
         @Override
         public String toString() {
-            return item_id + ";" + category_id;
+            return item_id + FS_TAB + category_id;
         }
 
         @Override
         public String getHeaderLine() {
-            return "item_id;category_id";
+            return "item_id{fs}category_id";
         }
 
         @Override
