@@ -10,6 +10,10 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class ReadXMLFile {
@@ -59,6 +63,23 @@ public class ReadXMLFile {
             }
         }
         System.out.println(c);
+        writeFile(items);
+    }
+
+    public <T extends ICol> void writeFile(List<T> data) {
+        Path file = Paths.get("data.csv");
+        List<String> lines = new ArrayList<>();
+        lines.add(data.get(0).getColLine());
+        for (ICol item : data) {
+            lines.add(item.toString());
+        }
+
+        try {
+            // Write lines of text to a file.
+            Files.write(file, lines, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void computeFile(String file) {
@@ -247,6 +268,10 @@ public class ReadXMLFile {
         return (!Objects.equals(value, "")) ? Integer.parseInt(value) : 0;
     }
 
+    private interface ICol {
+        String getColLine();
+    }
+
     private class Location {
         long item_id;
         String place = "";
@@ -267,7 +292,7 @@ public class ReadXMLFile {
         }
     }
 
-    private class Item {
+    private class Item implements ICol {
         long id;
         String user_id = "";
         String name = "";
@@ -290,6 +315,16 @@ public class ReadXMLFile {
         @Override
         public int hashCode() {
             return Objects.hash(id, user_id);
+        }
+
+        @Override
+        public String toString() {
+            return id + "," + user_id + "," + name + "," + currently + "," + first_did + "," + number_of_bids + "," + country + ",'" + started + ",'" + ends + "," + description;
+        }
+
+        @Override
+        public String getColLine() {
+            return "id,user_id,name,currently,first_did,number_of_bids,country,started,ends,description";
         }
     }
 
@@ -366,6 +401,14 @@ public class ReadXMLFile {
         @Override
         public int hashCode() {
             return Objects.hash(item_id, category_id);
+        }
+
+        @Override
+        public String toString() {
+            return "ItemCategory{" +
+                    "item_id=" + item_id +
+                    ", category_id=" + category_id +
+                    '}';
         }
     }
 
