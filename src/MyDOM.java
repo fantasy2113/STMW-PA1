@@ -20,7 +20,7 @@ public class MyDOM {
     private final Set<Item> items = new HashSet<>();
     private final Set<User> users = new HashSet<>();
     private final Set<Bid> bids = new HashSet<>();
-    private final Set<Location> locations = new HashSet<>();
+    private final Set<ItemLocation> locations = new HashSet<>();
     private final Set<Category> categories = new HashSet<>();
     private final Set<ItemCategory> itemsCategories = new HashSet<>();
     private final Set<Long> bidders = new HashSet<>();
@@ -52,7 +52,7 @@ public class MyDOM {
 
         System.out.println();
         System.out.println("Items: " + items.size());
-        System.out.println("Locations: " + locations.size());
+        System.out.println("ItemsLocations: " + locations.size());
         System.out.println("Users: " + users.size());
         System.out.println("Bids: " + bids.size());
         System.out.println("Categories: " + categories.size());
@@ -64,7 +64,7 @@ public class MyDOM {
         }
         System.out.println("Bidders: " + bidders.size());
         int c = 0;
-        for (Location location : locations) {
+        for (ItemLocation location : locations) {
             if (location.latitude.length() > 0 | location.longitude.length() > 0) {
                 c++;
             }
@@ -137,8 +137,8 @@ public class MyDOM {
         return item;
     }
 
-    private Location mapToLocation(Element ele, long itemId) {
-        Location location = new Location();
+    private ItemLocation mapToLocation(Element ele, long itemId) {
+        ItemLocation location = new ItemLocation();
         NodeList location1 = ele.getElementsByTagName("Location");
         Element locationEle = (Element) location1.item(location1.getLength() - 1);
         location.item_id = itemId;
@@ -260,7 +260,7 @@ public class MyDOM {
         String getFileName();
     }
 
-    private class Location implements ICsvFile {
+    private class ItemLocation implements ICsvFile {
         long item_id;
         String place = "";
         String latitude = "";
@@ -270,7 +270,7 @@ public class MyDOM {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            Location location = (Location) o;
+            ItemLocation location = (ItemLocation) o;
             return item_id == location.item_id;
         }
 
@@ -291,7 +291,7 @@ public class MyDOM {
 
         @Override
         public String getFileName() {
-            return "locations.csv";
+            return "item_locations.csv";
         }
     }
 

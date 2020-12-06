@@ -18,5 +18,5 @@ rm bids.csv
 rm categories.csv
 rm items.csv
 rm items_categories.csv
-rm locations.csv
+rm item_locations.csv
 rm users.csv
