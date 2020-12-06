@@ -9,7 +9,6 @@ CREATE TABLE `items`
     `currently`      decimal(8, 2) DEFAULT NULL,
     `first_bid`      decimal(8, 2) DEFAULT NULL,
     `number_of_bids` int(11)       DEFAULT NULL,
-    `country`        varchar(64)   DEFAULT NULL,
     `started`        datetime      DEFAULT NULL,
     `ends`           datetime      DEFAULT NULL,
     `description`    varchar(4000) DEFAULT NULL,

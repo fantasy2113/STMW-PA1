@@ -50,7 +50,7 @@ public class MyDOM {
         writeCsvFile(itemsCategories);
         System.out.println();
 
-        /*System.out.println();
+        System.out.println();
         System.out.println("Items: " + items.size());
         System.out.println("Locations: " + locations.size());
         System.out.println("Users: " + users.size());
@@ -69,7 +69,7 @@ public class MyDOM {
                 c++;
             }
         }
-        System.out.println(c);*/
+        System.out.println(c);
     }
 
     private <T extends ICsvFile> void writeCsvFile(Iterable<T> data) {
@@ -127,7 +127,6 @@ public class MyDOM {
         item.currently = getValueAsDouble(ele.getElementsByTagName("Currently").item(0).getFirstChild().getNodeValue());
         item.first_bid = getValueAsDouble(ele.getElementsByTagName("First_Bid").item(0).getFirstChild().getNodeValue());
         item.number_of_bids = getValueAsInteger(ele.getElementsByTagName("Number_of_Bids").item(0).getFirstChild().getNodeValue());
-        item.country = getValue(ele, "Country");
         item.started = getTimestampAsString(ele.getElementsByTagName("Started").item(0).getFirstChild().getNodeValue());
         item.ends = getTimestampAsString(ele.getElementsByTagName("Ends").item(0).getFirstChild().getNodeValue());
         String description = getValue(ele, "Description");
@@ -287,7 +286,6 @@ public class MyDOM {
         double currently;
         double first_bid;
         int number_of_bids;
-        String country = "";
         String started = "";
         String ends = "";
         String description = "";
@@ -307,12 +305,12 @@ public class MyDOM {
 
         @Override
         public String toString() {
-            return id + FS_TAB + user_id + FS_TAB + name + FS_TAB + currently + FS_TAB + first_bid + FS_TAB + number_of_bids + FS_TAB + country + FS_TAB + started + FS_TAB + ends + FS_TAB + description;
+            return id + FS_TAB + user_id + FS_TAB + name + FS_TAB + currently + FS_TAB + first_bid + FS_TAB + number_of_bids + FS_TAB + started + FS_TAB + ends + FS_TAB + description;
         }
 
         @Override
         public String getHeaderLine() {
-            return "id{fs}user_id{fs}name{fs}currently{fs}first_bid{fs}number_of_bids{fs}country{fs}started{fs}ends{fs}description";
+            return "id{fs}user_id{fs}name{fs}currently{fs}first_bid{fs}number_of_bids{fs}started{fs}ends{fs}description";
         }
 
         @Override
