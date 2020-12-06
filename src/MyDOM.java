@@ -363,7 +363,7 @@ public class MyDOM {
 
         @Override
         public String getHeaderLine() {
-            return "id{fs}user_id{fs}rating{fs}country{fs}place";
+            return "id{fs}name{fs}rating{fs}country{fs}place";
         }
 
         @Override

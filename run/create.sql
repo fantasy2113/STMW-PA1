@@ -4,7 +4,7 @@ USE ad;
 CREATE TABLE `items`
 (
     `id`             int(11) NOT NULL,
-    `user_id`        varchar(64)   DEFAULT NULL,
+    `user_id`        int(11) NOT NULL,
     `name`           varchar(128)  DEFAULT NULL,
     `currently`      decimal(8, 2) DEFAULT NULL,
     `first_bid`      decimal(8, 2) DEFAULT NULL,
@@ -20,9 +20,9 @@ CREATE TABLE `items`
 
 CREATE TABLE `bids`
 (
-    `id`      int(11)     NOT NULL,
-    `user_id` varchar(64) NOT NULL,
-    `item_id` int(11)     NOT NULL,
+    `id`      int(11) NOT NULL,
+    `user_id` int(11) NOT NULL,
+    `item_id` int(11) NOT NULL,
     `time`    datetime      DEFAULT NULL,
     `amount`  decimal(8, 2) DEFAULT NULL,
     PRIMARY KEY (`id`, `user_id`, `item_id`),
@@ -52,12 +52,14 @@ CREATE TABLE `categories`
 
 CREATE TABLE `users`
 (
-    `user_id` varchar(64) NOT NULL,
+    `id`      int(11)     NOT NULL,
+    `name`    varchar(64) NOT NULL,
     `rating`  int(11)     DEFAULT NULL,
     `country` varchar(64) DEFAULT NULL,
     `place`   varchar(64) DEFAULT NULL,
-    PRIMARY KEY (`user_id`),
-    UNIQUE KEY `user_id_UNIQUE` (`user_id`)
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `id_UNIQUE` (`id`),
+    UNIQUE KEY `name_UNIQUE` (`name`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = latin1;
 
