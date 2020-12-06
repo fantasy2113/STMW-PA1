@@ -312,12 +312,12 @@ public class MyDOM {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Item item = (Item) o;
-            return id == item.id && Objects.equals(user_id, item.user_id);
+            return id == item.id;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(id, user_id);
+            return Objects.hash(id);
         }
 
         @Override
@@ -348,12 +348,12 @@ public class MyDOM {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             User user = (User) o;
-            return id == user.id && Objects.equals(name, user.name);
+            return id == user.id;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(id, name);
+            return Objects.hash(id);
         }
 
         @Override
@@ -384,12 +384,12 @@ public class MyDOM {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Bid bid = (Bid) o;
-            return id == bid.id && item_id == bid.item_id && Objects.equals(user_id, bid.user_id);
+            return id == bid.id;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(id, user_id, item_id);
+            return Objects.hash(id);
         }
 
         @Override
@@ -417,12 +417,12 @@ public class MyDOM {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Category category = (Category) o;
-            return id == category.id && Objects.equals(name, category.name);
+            return id == category.id;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(id, name);
+            return Objects.hash(id);
         }
 
         @Override
