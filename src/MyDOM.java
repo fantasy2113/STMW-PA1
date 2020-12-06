@@ -169,7 +169,19 @@ public class MyDOM {
             bid.id = Objects.hash(bid.user_id, itemId);
             bid.time = getTimestampAsString(bidEle.getElementsByTagName("Time").item(0).getFirstChild().getNodeValue());
             bid.amount = getValueAsDouble(bidEle.getElementsByTagName("Amount").item(0).getFirstChild().getNodeValue());
+
             bids.add(bid);
+
+            try {
+                User user = new User();
+                user.user_id = bid.user_id;
+                user.rating = getValueAsInteger(bidderEle.getAttribute("Rating"));
+                user.country = bidderEle.getElementsByTagName("Country").item(0).getFirstChild().getNodeValue();
+                user.place = bidderEle.getElementsByTagName("Location").item(0).getFirstChild().getNodeValue();
+
+                users.add(user);
+            } catch (Exception ex) {
+            }
         }
     }
 
@@ -330,12 +342,12 @@ public class MyDOM {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             User user = (User) o;
-            return Objects.equals(user_id, user.user_id) && Objects.equals(rating, user.rating) && Objects.equals(country, user.country) && Objects.equals(place, user.place);
+            return Objects.equals(user_id, user.user_id);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(user_id, rating, country, place);
+            return Objects.hash(user_id);
         }
 
         @Override
