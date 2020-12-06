@@ -291,7 +291,7 @@ public class MyDOM {
 
         @Override
         public String getFileName() {
-            return "item_locations.csv";
+            return "items_locations.csv";
         }
     }
 
@@ -348,12 +348,12 @@ public class MyDOM {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             User user = (User) o;
-            return Objects.equals(name, user.name);
+            return id == user.id && Objects.equals(name, user.name);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(name);
+            return Objects.hash(id, name);
         }
 
         @Override

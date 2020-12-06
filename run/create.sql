@@ -30,7 +30,7 @@ CREATE TABLE `bids`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = latin1;
 
-CREATE TABLE `item_locations`
+CREATE TABLE `items_locations`
 (
     `item_id`   int(11) NOT NULL,
     `place`     varchar(64) DEFAULT NULL,

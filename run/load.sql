@@ -13,8 +13,8 @@ LINES TERMINATED BY '\n'
 IGNORE 1 ROWS;
 
 LOAD
-DATA LOCAL INFILE 'item_locations.csv'
-INTO TABLE locations
+DATA LOCAL INFILE 'items_locations.csv'
+INTO TABLE items_locations
 FIELDS TERMINATED BY '\t'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS;
