@@ -108,8 +108,8 @@ public class MyDOM {
                     Item item = mapToItem(itemElement);
                     items.add(item);
                     locations.add(mapToLocation(itemElement, item.id));
+                    addBidsAndUser(itemElement, item.id);
                     users.add(mapToUser(itemElement, item.user_id));
-                    addBids(itemElement, item.id);
                     addCategories(itemElement, item.id);
                 }
             }
@@ -158,7 +158,7 @@ public class MyDOM {
         return user;
     }
 
-    private void addBids(Element ele, long itemId) {
+    private void addBidsAndUser(Element ele, long itemId) {
         NodeList nodes = ((Element) ele.getElementsByTagName("Bids").item(0)).getElementsByTagName("Bid");
         for (int nodeIndex = 0; nodeIndex < nodes.getLength(); nodeIndex++) {
             Bid bid = new Bid();
