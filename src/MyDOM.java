@@ -23,7 +23,7 @@ public class MyDOM {
     private final Set<Location> locations = new HashSet<>();
     private final Set<Category> categories = new HashSet<>();
     private final Set<ItemCategory> itemsCategories = new HashSet<>();
-    private final Set<String> bidders = new HashSet<>();
+    private final Set<Long> bidders = new HashSet<>();
 
     public static void main(String[] args) {
         MyDOM myDOM = new MyDOM();
@@ -109,7 +109,7 @@ public class MyDOM {
                     items.add(item);
                     locations.add(mapToLocation(itemElement, item.id));
                     addBidsAndUser(itemElement, item.id);
-                    users.add(mapToUser(itemElement, item.user_id));
+                    users.add(mapToUser(itemElement, item.user_id_as_str));
                     addCategories(itemElement, item.id);
                 }
             }
@@ -122,7 +122,9 @@ public class MyDOM {
         Element sellerEle = (Element) ele.getElementsByTagName("Seller").item(0);
         Item item = new Item();
         item.id = getValueAsInteger(ele, "ItemID");
-        item.user_id = sellerEle.getAttribute("UserID");
+        String user_name = sellerEle.getAttribute("UserID");
+        item.user_id = Objects.hash(user_name);
+        item.user_id_as_str = user_name;
         item.name = ele.getElementsByTagName("Name").item(0).getFirstChild().getNodeValue();
         item.currently = getValueAsDouble(ele.getElementsByTagName("Currently").item(0).getFirstChild().getNodeValue());
         item.first_bid = getValueAsDouble(ele.getElementsByTagName("First_Bid").item(0).getFirstChild().getNodeValue());
@@ -146,12 +148,13 @@ public class MyDOM {
         return location;
     }
 
-    private User mapToUser(Element ele, String userId) {
+    private User mapToUser(Element ele, String userName) {
         User user = new User();
         Element sellerEle = (Element) ele.getElementsByTagName("Seller").item(0);
         NodeList locations = ele.getElementsByTagName("Location");
         NodeList countries = ele.getElementsByTagName("Country");
-        user.user_id = userId;
+        user.id = Objects.hash(userName);
+        user.name = userName;
         user.rating = getValueAsInteger(sellerEle.getAttribute("Rating"));
         user.country = countries.item(countries.getLength() - 1).getFirstChild().getNodeValue();
         user.place = locations.item(locations.getLength() - 1).getFirstChild().getNodeValue();
@@ -164,7 +167,7 @@ public class MyDOM {
             Bid bid = new Bid();
             Element bidEle = (Element) nodes.item(nodeIndex);
             Element bidderEle = (Element) bidEle.getElementsByTagName("Bidder").item(0);
-            bid.user_id = bidderEle.getAttribute("UserID");
+            bid.user_id = Objects.hash(bidderEle.getAttribute("UserID"));
             bid.item_id = itemId;
             bid.id = Objects.hash(bid.user_id, itemId);
             bid.time = getTimestampAsString(bidEle.getElementsByTagName("Time").item(0).getFirstChild().getNodeValue());
@@ -174,7 +177,8 @@ public class MyDOM {
 
             try {
                 User user = new User();
-                user.user_id = bid.user_id;
+                user.id = bid.user_id;
+                user.name = bidderEle.getAttribute("UserID");
                 user.rating = getValueAsInteger(bidderEle.getAttribute("Rating"));
                 user.country = bidderEle.getElementsByTagName("Country").item(0).getFirstChild().getNodeValue();
                 user.place = bidderEle.getElementsByTagName("Location").item(0).getFirstChild().getNodeValue();
@@ -293,7 +297,8 @@ public class MyDOM {
 
     private class Item implements ICsvFile {
         long id;
-        String user_id = "";
+        long user_id;
+        String user_id_as_str;
         String name = "";
         double currently;
         double first_bid;
@@ -332,7 +337,8 @@ public class MyDOM {
     }
 
     private class User implements ICsvFile {
-        String user_id = "";
+        long id;
+        String name = "";
         int rating;
         String country = "";
         String place = "";
@@ -342,22 +348,22 @@ public class MyDOM {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             User user = (User) o;
-            return Objects.equals(user_id, user.user_id);
+            return Objects.equals(name, user.name);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(user_id);
+            return Objects.hash(name);
         }
 
         @Override
         public String toString() {
-            return user_id + FS_TAB + rating + FS_TAB + country + FS_TAB + place;
+            return id + FS_TAB + name + FS_TAB + rating + FS_TAB + country + FS_TAB + place;
         }
 
         @Override
         public String getHeaderLine() {
-            return "user_id{fs}rating{fs}country{fs}place";
+            return "id{fs}user_id{fs}rating{fs}country{fs}place";
         }
 
         @Override
@@ -368,7 +374,7 @@ public class MyDOM {
 
     private class Bid implements ICsvFile {
         long id;
-        String user_id = "";
+        long user_id;
         long item_id;
         String time = "";
         double amount;
