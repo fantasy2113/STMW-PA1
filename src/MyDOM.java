@@ -88,8 +88,8 @@ public class MyDOM {
           Item item = mapToItem(itemElement);
           items.add(item);
           locations.add(mapToLocation(itemElement, item.id));
-          addBidsAndBidders(itemElement, item.id);
           bidders.add(mapToBidder(itemElement, item.owner_id_as_str));
+          addBidsAndBidders(itemElement, item.id);
           addCategories(itemElement, item.id);
         }
       }
@@ -162,7 +162,7 @@ public class MyDOM {
         bidder.place = bidderEle.getElementsByTagName("Location").item(0).getFirstChild().getNodeValue();
       } catch (Exception ex) {
       }
-      bidders.add(bidder);
+      //bidders.add(bidder);
     }
   }
 
@@ -349,12 +349,12 @@ public class MyDOM {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;
       Bid bid = (Bid) o;
-      return id == bid.id;
+      return bidder_id == bid.bidder_id && item_id == bid.item_id;
     }
 
     @Override
     public int hashCode() {
-      return Objects.hash(id);
+      return Objects.hash(bidder_id, item_id);
     }
 
     @Override
