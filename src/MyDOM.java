@@ -10,36 +10,36 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
 
 public class MyDOM {
   private static final String FS_TAB = "\t";
   private final Set<Item> items = new HashSet<>();
-  private final Set<User> users = new HashSet<>();
+  private final Set<Bidder> bidders = new HashSet<>();
   private final Set<Bid> bids = new HashSet<>();
   private final Set<ItemLocation> locations = new HashSet<>();
   private final Set<Category> categories = new HashSet<>();
   private final Set<ItemCategory> itemsCategories = new HashSet<>();
-  private final Set<Long> bidders = new HashSet<>();
-
   public String subPath = "";
 
-  public static void main(String... args) {
-    MyDOM myDOM = new MyDOM();
+  public MyDOM() {
+  }
 
-    if (args.length > 0) {
-      myDOM.subPath = args[0];
-    }
+  public MyDOM(String subPath) {
+    this.subPath = subPath;
+  }
 
-    List<String> files = new ArrayList<>();
+  private static List<String> getFilePaths() {
+    List<String> paths = new ArrayList<>();
     for (int i = 0; i < 40; i++) {
-      files.add("ebay_data/items-{#}.xml".replace("{#}", String.valueOf(i)));
+      paths.add("ebay_data/items-{#}.xml".replace("{#}", String.valueOf(i)));
     }
+    return paths;
+  }
 
-    myDOM.run(files);
+  public static void main(String... args) {
+    new MyDOM(args.length > 0 ? args[0] : "").run(getFilePaths());
   }
 
   public void run(List<String> files) {
@@ -49,42 +49,20 @@ public class MyDOM {
     }
     System.out.println();
     writeCsvFile(items);
-    writeCsvFile(users);
+    writeCsvFile(bidders);
     writeCsvFile(bids);
     writeCsvFile(locations);
     writeCsvFile(categories);
     writeCsvFile(itemsCategories);
-    System.out.println();
-
-    System.out.println();
-    System.out.println("Items: " + items.size());
-    System.out.println("ItemsLocations: " + locations.size());
-    System.out.println("Users: " + users.size());
-    System.out.println("Bids: " + bids.size());
-    System.out.println("Categories: " + categories.size());
-    System.out.println("ItemsCategories: " + itemsCategories.size());
-
-
-    for (Bid bid : bids) {
-      bidders.add(bid.user_id);
-    }
-    System.out.println("Bidders: " + bidders.size());
-    int c = 0;
-    for (ItemLocation location : locations) {
-      if (location.latitude.length() > 0 | location.longitude.length() > 0) {
-        c++;
-      }
-    }
-    System.out.println(c);
   }
 
-  private <T extends ICsvFile> void writeCsvFile(Iterable<T> data) {
+  private <T extends ICSVFile> void writeCsvFile(Iterable<T> data) {
     System.out.print(">");
-    ICsvFile first = data.iterator().next();
+    ICSVFile first = data.iterator().next();
     Path file = Paths.get(subPath + first.getFileName());
     List<String> lines = new ArrayList<>();
     lines.add(replaceFs(first.getHeaderLine()));
-    for (ICsvFile item : data) {
+    for (ICSVFile item : data) {
       lines.add(item.toString());
     }
     try {
@@ -102,20 +80,16 @@ public class MyDOM {
       DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
       Document doc = dBuilder.parse(fXmlFile);
       doc.getDocumentElement().normalize();
-
       NodeList nodeList = doc.getElementsByTagName("Item");
-
       for (int itemIndex = 0; itemIndex < nodeList.getLength(); itemIndex++) {
-
         Node node = nodeList.item(itemIndex);
-
         if (node.getNodeType() == Node.ELEMENT_NODE) {
           Element itemElement = (Element) node;
           Item item = mapToItem(itemElement);
           items.add(item);
           locations.add(mapToLocation(itemElement, item.id));
-          addBidsAndUser(itemElement, item.id);
-          users.add(mapToUser(itemElement, item.user_id_as_str));
+          addBidsAndBidders(itemElement, item.id);
+          bidders.add(mapToBidder(itemElement, item.owner_id_as_str));
           addCategories(itemElement, item.id);
         }
       }
@@ -129,8 +103,8 @@ public class MyDOM {
     Item item = new Item();
     item.id = getValueAsInteger(ele, "ItemID");
     String user_name = sellerEle.getAttribute("UserID");
-    item.user_id = Objects.hash(user_name);
-    item.user_id_as_str = user_name;
+    item.owner_id = Objects.hash(user_name);
+    item.owner_id_as_str = user_name;
     item.name = ele.getElementsByTagName("Name").item(0).getFirstChild().getNodeValue();
     item.currently = getValueAsDouble(ele.getElementsByTagName("Currently").item(0).getFirstChild().getNodeValue());
     item.first_bid = getValueAsDouble(ele.getElementsByTagName("First_Bid").item(0).getFirstChild().getNodeValue());
@@ -153,42 +127,39 @@ public class MyDOM {
     return location;
   }
 
-  private User mapToUser(Element ele, String userName) {
-    User user = new User();
+  private Bidder mapToBidder(Element ele, String bidderName) {
+    Bidder bidder = new Bidder();
     Element sellerEle = (Element) ele.getElementsByTagName("Seller").item(0);
     NodeList locations = ele.getElementsByTagName("Location");
     NodeList countries = ele.getElementsByTagName("Country");
-    user.id = Objects.hash(userName);
-    user.name = userName;
-    user.rating = getValueAsInteger(sellerEle.getAttribute("Rating"));
-    user.country = countries.item(countries.getLength() - 1).getFirstChild().getNodeValue();
-    user.place = locations.item(locations.getLength() - 1).getFirstChild().getNodeValue();
-    return user;
+    bidder.id = Objects.hash(bidderName);
+    bidder.name = bidderName;
+    bidder.rating = getValueAsInteger(sellerEle.getAttribute("Rating"));
+    bidder.country = countries.item(countries.getLength() - 1).getFirstChild().getNodeValue();
+    bidder.place = locations.item(locations.getLength() - 1).getFirstChild().getNodeValue();
+    return bidder;
   }
 
-  private void addBidsAndUser(Element ele, long itemId) {
+  private void addBidsAndBidders(Element ele, long itemId) {
     NodeList nodes = ((Element) ele.getElementsByTagName("Bids").item(0)).getElementsByTagName("Bid");
     for (int nodeIndex = 0; nodeIndex < nodes.getLength(); nodeIndex++) {
       Bid bid = new Bid();
       Element bidEle = (Element) nodes.item(nodeIndex);
       Element bidderEle = (Element) bidEle.getElementsByTagName("Bidder").item(0);
-      bid.user_id = Objects.hash(bidderEle.getAttribute("UserID"));
+      bid.bidder_id = Objects.hash(bidderEle.getAttribute("UserID"));
       bid.item_id = itemId;
-      bid.id = Objects.hash(bid.user_id, itemId);
+      bid.id = Objects.hash(bid.bidder_id, itemId);
       bid.time = getTimestampAsString(bidEle.getElementsByTagName("Time").item(0).getFirstChild().getNodeValue());
       bid.amount = getValueAsDouble(bidEle.getElementsByTagName("Amount").item(0).getFirstChild().getNodeValue());
-
       bids.add(bid);
-
       try {
-        User user = new User();
-        user.id = bid.user_id;
-        user.name = bidderEle.getAttribute("UserID");
-        user.rating = getValueAsInteger(bidderEle.getAttribute("Rating"));
-        user.country = bidderEle.getElementsByTagName("Country").item(0).getFirstChild().getNodeValue();
-        user.place = bidderEle.getElementsByTagName("Location").item(0).getFirstChild().getNodeValue();
-
-        users.add(user);
+        Bidder bidder = new Bidder();
+        bidder.id = bid.bidder_id;
+        bidder.name = bidderEle.getAttribute("UserID");
+        bidder.rating = getValueAsInteger(bidderEle.getAttribute("Rating"));
+        bidder.country = bidderEle.getElementsByTagName("Country").item(0).getFirstChild().getNodeValue();
+        bidder.place = bidderEle.getElementsByTagName("Location").item(0).getFirstChild().getNodeValue();
+        bidders.add(bidder);
       } catch (Exception ex) {
       }
     }
@@ -201,30 +172,20 @@ public class MyDOM {
       Category category = new Category();
       category.name = categoryName;
       category.id = categoryName.hashCode();
-
       categories.add(category);
-
       ItemCategory itemCategory = new ItemCategory();
       itemCategory.item_id = itemId;
       itemCategory.category_id = category.id;
-
       itemsCategories.add(itemCategory);
     }
   }
 
-  private String getValue(Element ele, String att) {
+  private String getValue(Element ele, String attribute) {
     try {
-      return ele.getElementsByTagName(att).item(0).getFirstChild().getNodeValue();
+      return ele.getElementsByTagName(attribute).item(0).getFirstChild().getNodeValue();
     } catch (Exception ex) {
       return "";
     }
-  }
-
-  private double getValueAsDouble(Element element, String attribute) {
-    String value = element.getAttribute(attribute);
-    return (!Objects.equals(value, "")) ? Double.parseDouble(value
-        .replace("$", "")
-        .replace(",", "")) : 0;
   }
 
   private int getValueAsInteger(Element element, String attribute) {
@@ -244,11 +205,9 @@ public class MyDOM {
 
   private String getTimestampAsString(String input) {
     try {
-      DateFormat inFormatter = new SimpleDateFormat("MMM-dd-yy HH:mm:ss", Locale.ENGLISH);
-      DateFormat outFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
-      Date date = inFormatter.parse(input);
-      String output = outFormatter.format(date);
-      return output;
+      return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
+          .format(new SimpleDateFormat("MMM-dd-yy HH:mm:ss", Locale.ENGLISH)
+              .parse(input));
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -259,13 +218,13 @@ public class MyDOM {
     return header.replace("{fs}", FS_TAB);
   }
 
-  private interface ICsvFile {
+  private interface ICSVFile {
     String getHeaderLine();
 
     String getFileName();
   }
 
-  private class ItemLocation implements ICsvFile {
+  private class ItemLocation implements ICSVFile {
     long item_id;
     String place = "";
     String latitude = "";
@@ -300,10 +259,10 @@ public class MyDOM {
     }
   }
 
-  private class Item implements ICsvFile {
+  private class Item implements ICSVFile {
     long id;
-    long user_id;
-    String user_id_as_str;
+    long owner_id;
+    String owner_id_as_str;
     String name = "";
     double currently;
     double first_bid;
@@ -327,12 +286,12 @@ public class MyDOM {
 
     @Override
     public String toString() {
-      return id + FS_TAB + user_id + FS_TAB + name + FS_TAB + currently + FS_TAB + first_bid + FS_TAB + number_of_bids + FS_TAB + started + FS_TAB + ends + FS_TAB + description;
+      return id + FS_TAB + owner_id + FS_TAB + name + FS_TAB + currently + FS_TAB + first_bid + FS_TAB + number_of_bids + FS_TAB + started + FS_TAB + ends + FS_TAB + description;
     }
 
     @Override
     public String getHeaderLine() {
-      return "id{fs}user_id{fs}name{fs}currently{fs}first_bid{fs}number_of_bids{fs}started{fs}ends{fs}description";
+      return "id{fs}owner_id{fs}name{fs}currently{fs}first_bid{fs}number_of_bids{fs}started{fs}ends{fs}description";
     }
 
     @Override
@@ -341,7 +300,7 @@ public class MyDOM {
     }
   }
 
-  private class User implements ICsvFile {
+  private class Bidder implements ICSVFile {
     long id;
     String name = "";
     int rating;
@@ -352,7 +311,7 @@ public class MyDOM {
     public boolean equals(Object o) {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;
-      User user = (User) o;
+      Bidder user = (Bidder) o;
       return id == user.id;
     }
 
@@ -373,13 +332,13 @@ public class MyDOM {
 
     @Override
     public String getFileName() {
-      return "users.csv";
+      return "bidders.csv";
     }
   }
 
-  private class Bid implements ICsvFile {
+  private class Bid implements ICSVFile {
     long id;
-    long user_id;
+    long bidder_id;
     long item_id;
     String time = "";
     double amount;
@@ -399,12 +358,12 @@ public class MyDOM {
 
     @Override
     public String toString() {
-      return id + FS_TAB + user_id + FS_TAB + item_id + FS_TAB + time + FS_TAB + amount;
+      return id + FS_TAB + bidder_id + FS_TAB + item_id + FS_TAB + time + FS_TAB + amount;
     }
 
     @Override
     public String getHeaderLine() {
-      return "id{fs}user_id{fs}item_id{fs}time{fs}amount";
+      return "id{fs}bidder_id{fs}item_id{fs}time{fs}amount";
     }
 
     @Override
@@ -413,7 +372,7 @@ public class MyDOM {
     }
   }
 
-  private class Category implements ICsvFile {
+  private class Category implements ICSVFile {
     long id;
     String name;
 
@@ -446,7 +405,7 @@ public class MyDOM {
     }
   }
 
-  private class ItemCategory implements ICsvFile {
+  private class ItemCategory implements ICSVFile {
     long item_id;
     long category_id;
 

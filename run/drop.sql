@@ -5,5 +5,5 @@ DROP TABLE IF EXISTS `items`;
 DROP TABLE IF EXISTS `bids`;
 DROP TABLE IF EXISTS `items_locations`;
 DROP TABLE IF EXISTS `categories`;
-DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `bidders`;
 DROP TABLE IF EXISTS `items_categories`;
