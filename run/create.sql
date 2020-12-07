@@ -22,6 +22,7 @@ CREATE TABLE `items`
     `currently`      decimal(8, 2) NOT NULL,
     `first_bid`      decimal(8, 2) NOT NULL,
     `number_of_bids` int(11)       NOT NULL,
+    `buy_price`      decimal(8, 2) NOT NULL,
     `started`        datetime      NOT NULL,
     `ends`           datetime      NOT NULL,
     `description`    varchar(4000) NOT NULL,

@@ -111,6 +111,10 @@ public class MyDOM {
     item.currently = getValueAsDouble(ele.getElementsByTagName("Currently").item(0).getFirstChild().getNodeValue());
     item.first_bid = getValueAsDouble(ele.getElementsByTagName("First_Bid").item(0).getFirstChild().getNodeValue());
     item.number_of_bids = getValueAsInteger(ele.getElementsByTagName("Number_of_Bids").item(0).getFirstChild().getNodeValue());
+    try {
+      item.buy_price = getValueAsDouble(ele.getElementsByTagName("Buy_Price").item(0).getFirstChild().getNodeValue());
+    } catch (Exception e) {
+    }
     item.started = getTimestampAsString(ele.getElementsByTagName("Started").item(0).getFirstChild().getNodeValue());
     item.ends = getTimestampAsString(ele.getElementsByTagName("Ends").item(0).getFirstChild().getNodeValue());
     String description = getValue(ele, "Description");
@@ -272,6 +276,7 @@ public class MyDOM {
     double currently;
     double first_bid;
     int number_of_bids;
+    double buy_price;
     String started = "";
     String ends = "";
     String description = "";
@@ -291,12 +296,12 @@ public class MyDOM {
 
     @Override
     public String toString() {
-      return id + FS_TAB + owner_id + FS_TAB + name + FS_TAB + currently + FS_TAB + first_bid + FS_TAB + number_of_bids + FS_TAB + started + FS_TAB + ends + FS_TAB + description;
+      return id + FS_TAB + owner_id + FS_TAB + name + FS_TAB + currently + FS_TAB + first_bid + FS_TAB + number_of_bids + FS_TAB + buy_price + FS_TAB + started + FS_TAB + ends + FS_TAB + description;
     }
 
     @Override
     public String getHeaderLine() {
-      return "id{fs}owner_id{fs}name{fs}currently{fs}first_bid{fs}number_of_bids{fs}started{fs}ends{fs}description";
+      return "id{fs}owner_id{fs}name{fs}currently{fs}first_bid{fs}number_of_bids{fs}buy_price{fs}started{fs}ends{fs}description";
     }
 
     @Override
