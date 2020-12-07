@@ -102,7 +102,7 @@ public class MyDOM {
     Element sellerEle = (Element) ele.getElementsByTagName("Seller").item(0);
     Item item = new Item();
     item.id = getValueAsInteger(ele, "ItemID");
-    String user_name = sellerEle.getAttribute("UserID");
+    String user_name = sellerEle.getAttribute("UserID").trim();
     item.owner_id = Objects.hash(user_name);
     item.owner_id_as_str = user_name;
     item.name = ele.getElementsByTagName("Name").item(0).getFirstChild().getNodeValue();
@@ -146,7 +146,7 @@ public class MyDOM {
       Bid bid = new Bid();
       Element bidEle = (Element) nodes.item(nodeIndex);
       Element bidderEle = (Element) bidEle.getElementsByTagName("Bidder").item(0);
-      bid.bidder_id = Objects.hash(bidderEle.getAttribute("UserID"));
+      bid.bidder_id = Objects.hash(bidderEle.getAttribute("UserID").trim());
       bid.item_id = itemId;
       bid.id = Objects.hash(bid.bidder_id, itemId);
       bid.time = getTimestampAsString(bidEle.getElementsByTagName("Time").item(0).getFirstChild().getNodeValue());
@@ -155,7 +155,7 @@ public class MyDOM {
 
       Bidder bidder = new Bidder();
       bidder.id = bid.bidder_id;
-      bidder.name = bidderEle.getAttribute("UserID");
+      bidder.name = bidderEle.getAttribute("UserID").trim();
       bidder.rating = getValueAsInteger(bidderEle.getAttribute("Rating"));
       try {
         bidder.country = bidderEle.getElementsByTagName("Country").item(0).getFirstChild().getNodeValue();
