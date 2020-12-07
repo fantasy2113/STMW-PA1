@@ -54,6 +54,7 @@ public class MyDOM {
     writeCsvFile(locations);
     writeCsvFile(categories);
     writeCsvFile(itemsCategories);
+    System.out.println();
   }
 
   private <T extends ICSVFile> void writeCsvFile(Iterable<T> data) {
@@ -86,8 +87,7 @@ public class MyDOM {
         if (node.getNodeType() == Node.ELEMENT_NODE) {
           Element itemElement = (Element) node;
           Item item = mapToItem(itemElement);
-          if (!items.contains(item)) {
-            items.add(item);
+          if (items.add(item)) {
             locations.add(mapToLocation(itemElement, item.id));
             bidders.add(mapToBidder(itemElement, item));
             addBidsAndBidders(itemElement, item);
@@ -153,18 +153,19 @@ public class MyDOM {
       bid.id = Objects.hash(bid.bidder_id, item.id);
       bid.time = getTimestampAsString(bidEle.getElementsByTagName("Time").item(0).getFirstChild().getNodeValue());
       bid.amount = getValueAsDouble(bidEle.getElementsByTagName("Amount").item(0).getFirstChild().getNodeValue());
-      bids.add(bid);
 
-      Bidder bidder = new Bidder();
-      bidder.id = bid.bidder_id;
-      bidder.name = bidderEle.getAttribute("UserID").trim();
-      bidder.rating = getValueAsInteger(bidderEle.getAttribute("Rating"));
-      try {
-        bidder.country = bidderEle.getElementsByTagName("Country").item(0).getFirstChild().getNodeValue();
-        bidder.place = bidderEle.getElementsByTagName("Location").item(0).getFirstChild().getNodeValue();
-      } catch (Exception ex) {
+      if (bids.add(bid)) {
+        Bidder bidder = new Bidder();
+        bidder.id = bid.bidder_id;
+        bidder.name = bidderEle.getAttribute("UserID").trim();
+        bidder.rating = getValueAsInteger(bidderEle.getAttribute("Rating"));
+        try {
+          bidder.country = bidderEle.getElementsByTagName("Country").item(0).getFirstChild().getNodeValue();
+          bidder.place = bidderEle.getElementsByTagName("Location").item(0).getFirstChild().getNodeValue();
+        } catch (Exception ex) {
+        }
+        //bidders.add(bidder);
       }
-      bidders.add(bidder);
     }
   }
 
@@ -176,6 +177,7 @@ public class MyDOM {
       category.name = categoryName.trim();
       category.id = Objects.hash(category.name);
       categories.add(category);
+
       ItemCategory itemCategory = new ItemCategory();
       itemCategory.item_id = itemId;
       itemCategory.category_id = category.id;
