@@ -1,14 +1,18 @@
 #1. Find the number of users in the database.
-
+SELECT COUNT(*)
+FROM bidders;
 
 #2. Find the number of items in "New York",
 #i.e., itmes whose location is exactly the string "New York".
 #Pay special attention to case sensitivity. E.g., you should not match items in "new york".
-
+SELECT COUNT(*)
+FROM ad.items_locations
+WHERE place LIKE BINARY 'New York';
 
 #3. Find the number of auctions belonging to exactly four categories.
 #Be careful to remove duplicates, if you store them.
-
+SELECT COUNT(*)
+FROM (SELECT item_id FROM ad.items_categories GROUP BY item_id HAVING COUNT(item_id) = 4) AS result;
 
 #4. Find the ID(s) of current (unsold) auction(s) with the highest bid.
 #Remember that the data was captured at December 20th, 2001, one second after midnight.
