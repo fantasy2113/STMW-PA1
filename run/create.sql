@@ -33,9 +33,9 @@ CREATE TABLE `bids`
 CREATE TABLE `items_locations`
 (
     `item_id`   int(11) NOT NULL,
-    `place`     varchar(64) DEFAULT NULL,
-    `latitude`  varchar(64) DEFAULT NULL,
-    `longitude` varchar(64) DEFAULT NULL,
+    `place`     varchar(256) DEFAULT NULL,
+    `latitude`  varchar(64)  DEFAULT NULL,
+    `longitude` varchar(64)  DEFAULT NULL,
     PRIMARY KEY (`item_id`),
     UNIQUE KEY `item_id_UNIQUE` (`item_id`)
 ) ENGINE = InnoDB
@@ -56,7 +56,7 @@ CREATE TABLE `users`
     `name`    varchar(64) NOT NULL,
     `rating`  int(11)      DEFAULT NULL,
     `country` varchar(64)  DEFAULT NULL,
-    `place`   varchar(128) DEFAULT NULL,
+    `place`   varchar(256) DEFAULT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `id_UNIQUE` (`id`),
     UNIQUE KEY `name_UNIQUE` (`name`)
