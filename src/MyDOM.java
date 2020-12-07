@@ -86,11 +86,13 @@ public class MyDOM {
         if (node.getNodeType() == Node.ELEMENT_NODE) {
           Element itemElement = (Element) node;
           Item item = mapToItem(itemElement);
-          items.add(item);
-          locations.add(mapToLocation(itemElement, item.id));
-          bidders.add(mapToBidder(itemElement, item.owner_id_as_str));
-          addBidsAndBidders(itemElement, item.id);
-          addCategories(itemElement, item.id);
+          if (!items.contains(item)) {
+            items.add(item);
+            locations.add(mapToLocation(itemElement, item.id));
+            bidders.add(mapToBidder(itemElement, item));
+            addBidsAndBidders(itemElement, item);
+            addCategories(itemElement, item.id);
+          }
         }
       }
     } catch (Exception e) {
@@ -103,7 +105,7 @@ public class MyDOM {
     Item item = new Item();
     item.id = getValueAsInteger(ele, "ItemID");
     String user_name = sellerEle.getAttribute("UserID").trim();
-    item.owner_id = Objects.hash(user_name);
+    item.owner_id = Objects.hash(user_name, getValueAsInteger(sellerEle.getAttribute("Rating")));
     item.owner_id_as_str = user_name;
     item.name = ele.getElementsByTagName("Name").item(0).getFirstChild().getNodeValue();
     item.currently = getValueAsDouble(ele.getElementsByTagName("Currently").item(0).getFirstChild().getNodeValue());
@@ -127,28 +129,28 @@ public class MyDOM {
     return location;
   }
 
-  private Bidder mapToBidder(Element ele, String bidderName) {
+  private Bidder mapToBidder(Element ele, Item item) {
     Bidder bidder = new Bidder();
     Element sellerEle = (Element) ele.getElementsByTagName("Seller").item(0);
     NodeList locations = ele.getElementsByTagName("Location");
     NodeList countries = ele.getElementsByTagName("Country");
-    bidder.id = Objects.hash(bidderName);
-    bidder.name = bidderName;
+    bidder.id = item.owner_id;
+    bidder.name = item.owner_id_as_str;
     bidder.rating = getValueAsInteger(sellerEle.getAttribute("Rating"));
     bidder.country = countries.item(countries.getLength() - 1).getFirstChild().getNodeValue();
     bidder.place = locations.item(locations.getLength() - 1).getFirstChild().getNodeValue();
     return bidder;
   }
 
-  private void addBidsAndBidders(Element ele, long itemId) {
+  private void addBidsAndBidders(Element ele, Item item) {
     NodeList nodes = ((Element) ele.getElementsByTagName("Bids").item(0)).getElementsByTagName("Bid");
     for (int nodeIndex = 0; nodeIndex < nodes.getLength(); nodeIndex++) {
       Bid bid = new Bid();
       Element bidEle = (Element) nodes.item(nodeIndex);
       Element bidderEle = (Element) bidEle.getElementsByTagName("Bidder").item(0);
-      bid.bidder_id = Objects.hash(bidderEle.getAttribute("UserID").trim());
-      bid.item_id = itemId;
-      bid.id = Objects.hash(bid.bidder_id, itemId);
+      bid.bidder_id = Objects.hash(bidderEle.getAttribute("UserID").trim(), getValueAsInteger(bidderEle.getAttribute("Rating")));
+      bid.item_id = item.id;
+      bid.id = Objects.hash(bid.bidder_id, item.id);
       bid.time = getTimestampAsString(bidEle.getElementsByTagName("Time").item(0).getFirstChild().getNodeValue());
       bid.amount = getValueAsDouble(bidEle.getElementsByTagName("Amount").item(0).getFirstChild().getNodeValue());
       bids.add(bid);
@@ -171,8 +173,8 @@ public class MyDOM {
     for (int i = 0; i < categoryNodeList.getLength(); i++) {
       String categoryName = categoryNodeList.item(i).getFirstChild().getNodeValue();
       Category category = new Category();
-      category.name = categoryName;
-      category.id = categoryName.hashCode();
+      category.name = categoryName.trim();
+      category.id = Objects.hash(category.name);
       categories.add(category);
       ItemCategory itemCategory = new ItemCategory();
       itemCategory.item_id = itemId;
