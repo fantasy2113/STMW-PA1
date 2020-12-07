@@ -162,7 +162,7 @@ public class MyDOM {
         bidder.place = bidderEle.getElementsByTagName("Location").item(0).getFirstChild().getNodeValue();
       } catch (Exception ex) {
       }
-      //bidders.add(bidder);
+      bidders.add(bidder);
     }
   }
 
@@ -312,13 +312,13 @@ public class MyDOM {
     public boolean equals(Object o) {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;
-      Bidder user = (Bidder) o;
-      return id == user.id;
+      Bidder bidder = (Bidder) o;
+      return Objects.equals(name, bidder.name);
     }
 
     @Override
     public int hashCode() {
-      return Objects.hash(id);
+      return Objects.hash(name);
     }
 
     @Override
