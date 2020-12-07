@@ -152,16 +152,17 @@ public class MyDOM {
       bid.time = getTimestampAsString(bidEle.getElementsByTagName("Time").item(0).getFirstChild().getNodeValue());
       bid.amount = getValueAsDouble(bidEle.getElementsByTagName("Amount").item(0).getFirstChild().getNodeValue());
       bids.add(bid);
+
+      Bidder bidder = new Bidder();
+      bidder.id = bid.bidder_id;
+      bidder.name = bidderEle.getAttribute("UserID");
+      bidder.rating = getValueAsInteger(bidderEle.getAttribute("Rating"));
       try {
-        Bidder bidder = new Bidder();
-        bidder.id = bid.bidder_id;
-        bidder.name = bidderEle.getAttribute("UserID");
-        bidder.rating = getValueAsInteger(bidderEle.getAttribute("Rating"));
         bidder.country = bidderEle.getElementsByTagName("Country").item(0).getFirstChild().getNodeValue();
         bidder.place = bidderEle.getElementsByTagName("Location").item(0).getFirstChild().getNodeValue();
-        bidders.add(bidder);
       } catch (Exception ex) {
       }
+      bidders.add(bidder);
     }
   }
 
