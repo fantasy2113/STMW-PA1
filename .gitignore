@@ -1,4 +1,4 @@
-.idea/**
-out/**
+.idea
+out
 *.csv
-ebay_data/**
+ebay_data
