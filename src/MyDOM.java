@@ -164,7 +164,7 @@ public class MyDOM {
           bidder.place = bidderEle.getElementsByTagName("Location").item(0).getFirstChild().getNodeValue();
         } catch (Exception ex) {
         }
-        //bidders.add(bidder);
+        bidders.add(bidder);
       }
     }
   }
