@@ -25,8 +25,14 @@ public class MyDOM {
     private final Set<ItemCategory> itemsCategories = new HashSet<>();
     private final Set<Long> bidders = new HashSet<>();
 
-    public static void main(String[] args) {
+    public String subPath = "";
+
+    public static void main(String... args) {
         MyDOM myDOM = new MyDOM();
+
+        if (args.length > 0) {
+            myDOM.subPath = args[0];
+        }
 
         List<String> files = new ArrayList<>();
         for (int i = 0; i < 40; i++) {
@@ -75,7 +81,7 @@ public class MyDOM {
     private <T extends ICsvFile> void writeCsvFile(Iterable<T> data) {
         System.out.print(">");
         ICsvFile first = data.iterator().next();
-        Path file = Paths.get(first.getFileName());
+        Path file = Paths.get(subPath + first.getFileName());
         List<String> lines = new ArrayList<>();
         lines.add(replaceFs(first.getHeaderLine()));
         for (ICsvFile item : data) {

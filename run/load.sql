@@ -1,3 +1,6 @@
+use
+ad;
+
 LOAD
 DATA LOCAL INFILE 'items.csv'
 INTO TABLE items

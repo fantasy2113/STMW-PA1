@@ -54,9 +54,9 @@ CREATE TABLE `users`
 (
     `id`      int(11)     NOT NULL,
     `name`    varchar(64) NOT NULL,
-    `rating`  int(11)     DEFAULT NULL,
-    `country` varchar(64) DEFAULT NULL,
-    `place`   varchar(64) DEFAULT NULL,
+    `rating`  int(11)      DEFAULT NULL,
+    `country` varchar(64)  DEFAULT NULL,
+    `place`   varchar(128) DEFAULT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `id_UNIQUE` (`id`),
     UNIQUE KEY `name_UNIQUE` (`name`)
