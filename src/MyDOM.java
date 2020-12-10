@@ -45,35 +45,19 @@ public class MyDOM {
   public void run(List<String> files) {
     System.out.println("MyDOM - Run: ");
     for (String file : files) {
-      computeFile(file);
+      loadXMLFile(file);
     }
     System.out.println();
-    writeCsvFile(items);
-    writeCsvFile(users);
-    writeCsvFile(bids);
-    writeCsvFile(locations);
-    writeCsvFile(categories);
-    writeCsvFile(itemsCategories);
+    writeCSVFile(items);
+    writeCSVFile(users);
+    writeCSVFile(bids);
+    writeCSVFile(locations);
+    writeCSVFile(categories);
+    writeCSVFile(itemsCategories);
     System.out.println();
   }
 
-  private <T extends ICSVFile> void writeCsvFile(Iterable<T> data) {
-    System.out.print(">");
-    ICSVFile first = data.iterator().next();
-    Path file = Paths.get(subPath + first.getFileName());
-    List<String> lines = new ArrayList<>();
-    lines.add(replaceFs(first.getHeaderLine()));
-    for (ICSVFile item : data) {
-      lines.add(item.toString());
-    }
-    try {
-      Files.write(file, lines, StandardCharsets.UTF_8);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
-
-  private void computeFile(String file) {
+  private void loadXMLFile(String file) {
     System.out.print("<");
     try {
       File fXmlFile = new File(file);
@@ -95,6 +79,22 @@ public class MyDOM {
           }
         }
       }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  private <T extends ICSVFile> void writeCSVFile(Iterable<T> data) {
+    System.out.print(">");
+    ICSVFile first = data.iterator().next();
+    Path file = Paths.get(subPath + first.getFileName());
+    List<String> lines = new ArrayList<>();
+    lines.add(replaceFs(first.getHeaderLine()));
+    for (ICSVFile item : data) {
+      lines.add(item.toString());
+    }
+    try {
+      Files.write(file, lines, StandardCharsets.UTF_8);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -166,7 +166,7 @@ public class MyDOM {
         try {
           user.country = bidderEle.getElementsByTagName("Country").item(0).getFirstChild().getNodeValue();
           user.place = bidderEle.getElementsByTagName("Location").item(0).getFirstChild().getNodeValue();
-        } catch (Exception ex) {
+        } catch (Exception e) {
         }
         users.add(user);
       }
@@ -192,7 +192,7 @@ public class MyDOM {
   private String getValue(Element ele, String attribute) {
     try {
       return ele.getElementsByTagName(attribute).item(0).getFirstChild().getNodeValue();
-    } catch (Exception ex) {
+    } catch (Exception e) {
       return "";
     }
   }
