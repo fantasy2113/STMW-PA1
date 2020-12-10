@@ -1,6 +1,6 @@
 # 1. Find the number of users in the database.
 SELECT COUNT(*)
-FROM users;
+FROM ad.users;
 
 # 2. Find the number of items in "New York",
 # i.e., itmes whose location is exactly the string "New York".
@@ -54,16 +54,28 @@ FROM (SELECT ic.category_id
       GROUP BY ic.category_id) AS result;
 
 #The number of entries in the item-table is 19532.
+SELECT COUNT(*)
+FROM ad.items;
 
 #The number of entries in the table that associates items with categories is 90269.
+SELECT COUNT(*)
+FROM ad.items_categories;
 
 #The number of sellers is 13129.
 SELECT COUNT(*)
 FROM (SELECT user_id FROM ad.items GROUP BY user_id) AS result;
+
 #The number of bidders is 7010.
 SELECT COUNT(*)
 FROM (SELECT user_id FROM ad.bids GROUP BY user_id) AS result;
 
 #The number of items that have a buyPrice is 1959.
+SELECT COUNT(*)
+FROM ad.items
+WHERE ad.items.buy_price > 0;
 
 #The number of items that have longitude/latitude information is 13090.
+SELECT COUNT(*)
+FROM ad.items_locations
+WHERE ad.items_locations.latitude != ''
+  AND ad.items_locations.longitude != '';

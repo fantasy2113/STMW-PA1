@@ -5,9 +5,9 @@ CREATE TABLE `users`
 (
     `id`      int(11)     NOT NULL,
     `name`    varchar(64) NOT NULL,
-    `rating`  int(11)      DEFAULT NULL,
-    `country` varchar(64)  DEFAULT NULL,
-    `place`   varchar(256) DEFAULT NULL,
+    `rating`  int(11)      DEFAULT 0,
+    `country` varchar(64)  DEFAULT '',
+    `place`   varchar(256) DEFAULT '',
     PRIMARY KEY (`id`),
     UNIQUE KEY `id_UNIQUE` (`id`),
     UNIQUE KEY `name_UNIQUE` (`name`)
@@ -45,9 +45,9 @@ CREATE TABLE `categories`
 CREATE TABLE `items_locations`
 (
     `item_id`   int(11) NOT NULL,
-    `place`     varchar(256) DEFAULT NULL,
-    `latitude`  varchar(64)  DEFAULT NULL,
-    `longitude` varchar(64)  DEFAULT NULL,
+    `place`     varchar(256) DEFAULT '',
+    `latitude`  varchar(64)  DEFAULT '',
+    `longitude` varchar(64)  DEFAULT '',
     PRIMARY KEY (`item_id`),
     UNIQUE KEY `item_id_UNIQUE` (`item_id`),
     KEY `fk_from_items_locations_to_items_idx` (`item_id`),
