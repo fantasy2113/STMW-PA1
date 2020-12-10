@@ -31,9 +31,11 @@ public class MyDOM {
   }
 
   private static List<String> getFilePaths() {
+    String ebayData = System.getProperty("EBAY_DATA");
+    System.out.println("Load data from: " + ebayData);
     List<String> paths = new ArrayList<>();
     for (int i = 0; i < 40; i++) {
-      paths.add("ebay_data/items-{#}.xml".replace("{#}", String.valueOf(i)));
+      paths.add(ebayData + "/items-{#}.xml".replace("{#}", String.valueOf(i)));
     }
     return paths;
   }
