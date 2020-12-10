@@ -61,9 +61,9 @@ CREATE TABLE `items_categories`
     `category_id` int(11) NOT NULL,
     PRIMARY KEY (`item_id`, `category_id`),
     KEY `fk_from_items_categories_to_items_idx` (`item_id`),
-    KEY `fk_from_tems_categories_to_categories_idx` (`category_id`),
+    KEY `fk_from_items_categories_to_categories_idx` (`category_id`),
     CONSTRAINT `fk_from_items_categories_to_items` FOREIGN KEY (`item_id`) REFERENCES `items` (`id`),
-    CONSTRAINT `fk_from_tems_categories_to_categories` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`)
+    CONSTRAINT `fk_from_items_categories_to_categories` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = latin1;
 
