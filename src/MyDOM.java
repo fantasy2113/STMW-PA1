@@ -16,7 +16,7 @@ import java.util.*;
 public class MyDOM {
   private static final String FS_TAB = "\t";
   private final Set<Item> items = new HashSet<>();
-  private final Set<Bidder> bidders = new HashSet<>();
+  private final Set<User> users = new HashSet<>();
   private final Set<Bid> bids = new HashSet<>();
   private final Set<ItemLocation> locations = new HashSet<>();
   private final Set<Category> categories = new HashSet<>();
@@ -49,7 +49,7 @@ public class MyDOM {
     }
     System.out.println();
     writeCsvFile(items);
-    writeCsvFile(bidders);
+    writeCsvFile(users);
     writeCsvFile(bids);
     writeCsvFile(locations);
     writeCsvFile(categories);
@@ -89,7 +89,7 @@ public class MyDOM {
           Item item = mapToItem(itemElement);
           if (items.add(item)) {
             locations.add(mapToLocation(itemElement, item.id));
-            bidders.add(mapToBidder(itemElement, item));
+            users.add(mapToBidder(itemElement, item));
             addBidsAndBidders(itemElement, item);
             addCategories(itemElement, item.id);
           }
@@ -133,8 +133,8 @@ public class MyDOM {
     return location;
   }
 
-  private Bidder mapToBidder(Element ele, Item item) {
-    Bidder bidder = new Bidder();
+  private User mapToBidder(Element ele, Item item) {
+    User bidder = new User();
     Element sellerEle = (Element) ele.getElementsByTagName("Seller").item(0);
     NodeList locations = ele.getElementsByTagName("Location");
     NodeList countries = ele.getElementsByTagName("Country");
@@ -159,7 +159,7 @@ public class MyDOM {
       bid.amount = getValueAsDouble(bidEle.getElementsByTagName("Amount").item(0).getFirstChild().getNodeValue());
 
       if (bids.add(bid)) {
-        Bidder bidder = new Bidder();
+        User bidder = new User();
         bidder.id = bid.bidder_id;
         bidder.name = bidderEle.getAttribute("UserID").trim();
         bidder.rating = getValueAsInteger(bidderEle.getAttribute("Rating"));
@@ -168,7 +168,7 @@ public class MyDOM {
           bidder.place = bidderEle.getElementsByTagName("Location").item(0).getFirstChild().getNodeValue();
         } catch (Exception ex) {
         }
-        bidders.add(bidder);
+        users.add(bidder);
       }
     }
   }
@@ -310,7 +310,7 @@ public class MyDOM {
     }
   }
 
-  private class Bidder implements ICSVFile {
+  private class User implements ICSVFile {
     long id;
     String name = "";
     int rating;
@@ -321,7 +321,7 @@ public class MyDOM {
     public boolean equals(Object o) {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;
-      Bidder bidder = (Bidder) o;
+      User bidder = (User) o;
       return Objects.equals(name, bidder.name);
     }
 
@@ -342,7 +342,7 @@ public class MyDOM {
 
     @Override
     public String getFileName() {
-      return "bidders.csv";
+      return "users.csv";
     }
   }
 
