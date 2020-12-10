@@ -31,7 +31,7 @@ public class MyDOM {
   }
 
   private static List<String> getFilePaths() {
-    String ebayData = System.getProperty("EBAY_DATA");
+    String ebayData = System.getenv("EBAY_DATA");
     System.out.println("Load data from: " + ebayData);
     List<String> paths = new ArrayList<>();
     for (int i = 0; i < 40; i++) {
@@ -82,7 +82,7 @@ public class MyDOM {
         }
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      System.out.println(e.getMessage());
     }
   }
 
