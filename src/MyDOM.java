@@ -21,13 +21,13 @@ public class MyDOM {
   private final Set<ItemLocation> locations = new HashSet<>();
   private final Set<Category> categories = new HashSet<>();
   private final Set<ItemCategory> itemsCategories = new HashSet<>();
-  public String subPath = "";
+  public String rootOutPath = "";
 
   public MyDOM() {
   }
 
-  public MyDOM(String subPath) {
-    this.subPath = subPath;
+  public MyDOM(String rootOutPath) {
+    this.rootOutPath = rootOutPath;
   }
 
   private static List<String> getFilePaths() {
@@ -89,7 +89,7 @@ public class MyDOM {
   private <T extends ICSVFile> void writeCSVFile(Iterable<T> data) {
     System.out.print(">");
     ICSVFile first = data.iterator().next();
-    Path file = Paths.get(subPath + first.getFileName());
+    Path file = Paths.get(rootOutPath + first.getFileName());
     List<String> lines = new ArrayList<>();
     lines.add(replaceFs(first.getHeaderLine()));
     for (ICSVFile item : data) {
