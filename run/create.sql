@@ -1,7 +1,7 @@
 CREATE DATABASE IF NOT EXISTS ad;
 USE ad;
 
-CREATE TABLE `bidders`
+CREATE TABLE `users`
 (
     `id`      int(11)     NOT NULL,
     `name`    varchar(64) NOT NULL,
@@ -17,7 +17,7 @@ CREATE TABLE `bidders`
 CREATE TABLE `items`
 (
     `id`             int(11)       NOT NULL,
-    `owner_id`       int(11)       NOT NULL,
+    `user_id`        int(11)       NOT NULL,
     `name`           varchar(128)  NOT NULL,
     `currently`      decimal(8, 2) NOT NULL,
     `first_bid`      decimal(8, 2) NOT NULL,
@@ -28,8 +28,8 @@ CREATE TABLE `items`
     `description`    varchar(4000) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `id_UNIQUE` (`id`),
-    KEY `fk_from_items_to_bidders_idx` (`owner_id`),
-    CONSTRAINT `fk_from_items_to_bidders` FOREIGN KEY (`owner_id`) REFERENCES `bidders` (`id`)
+    KEY `fk_from_items_to_users_idx` (`user_id`),
+    CONSTRAINT `fk_from_items_to_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = latin1;
 
@@ -69,16 +69,16 @@ CREATE TABLE `items_categories`
 
 CREATE TABLE `bids`
 (
-    `id`        int(11)       NOT NULL,
-    `bidder_id` int(11)       NOT NULL,
-    `item_id`   int(11)       NOT NULL,
-    `time`      datetime      NOT NULL,
-    `amount`    decimal(8, 2) NOT NULL,
+    `id`      int(11)       NOT NULL,
+    `user_id` int(11)       NOT NULL,
+    `item_id` int(11)       NOT NULL,
+    `time`    datetime      NOT NULL,
+    `amount`  decimal(8, 2) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `id_UNIQUE` (`id`),
-    KEY `fk_from_bids_to_bidders_idx` (`bidder_id`),
+    KEY `fk_from_bids_to_users_idx` (`user_id`),
     KEY `fk_from_bids_to_items_idx` (`item_id`),
-    CONSTRAINT `fk_from_bids_to_bidders` FOREIGN KEY (`bidder_id`) REFERENCES `bidders` (`id`),
+    CONSTRAINT `fk_from_bids_to_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
     CONSTRAINT `fk_from_bids_to_items` FOREIGN KEY (`item_id`) REFERENCES `items` (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = latin1;
