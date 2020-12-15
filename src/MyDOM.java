@@ -32,7 +32,6 @@ public class MyDOM {
 
   private static List<String> getFilePaths() {
     String ebayData = System.getenv("EBAY_DATA");
-    System.out.println("Loading ebay-data from: " + ebayData);
     List<String> paths = new ArrayList<>();
     for (int i = 0; i < 40; i++) {
       paths.add(ebayData + "/items-{#}.xml".replace("{#}", String.valueOf(i)));
@@ -45,7 +44,9 @@ public class MyDOM {
   }
 
   public void run(List<String> files) {
+    System.out.println();
     System.out.println("MyDOM:\tStart");
+    System.out.println("\tLoaded {ebay-data} from:\t" + System.getenv("EBAY_DATA"));
     System.out.print("\tComputing:\t[");
     for (String file : files) {
       loadXMLFile(file);
