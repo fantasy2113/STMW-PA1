@@ -46,7 +46,7 @@ public class MyDOM {
   public void run(List<String> files) {
     System.out.println();
     System.out.println("MyDOM:\tStart");
-    System.out.println("\tLoaded data:\t" + System.getenv("EBAY_DATA"));
+    System.out.println("\tFiles loaded:\t" + System.getenv("EBAY_DATA"));
     System.out.print("\tComputing:\t\t[");
     for (String file : files) {
       loadXMLFile(file);
