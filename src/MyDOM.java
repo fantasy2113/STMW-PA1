@@ -32,7 +32,7 @@ public class MyDOM {
 
   private static List<String> getFilePaths() {
     String ebayData = System.getenv("EBAY_DATA");
-    System.out.println("Load data from: " + ebayData);
+    System.out.println("Loading ebay-data from: " + ebayData);
     List<String> paths = new ArrayList<>();
     for (int i = 0; i < 40; i++) {
       paths.add(ebayData + "/items-{#}.xml".replace("{#}", String.valueOf(i)));
@@ -45,22 +45,26 @@ public class MyDOM {
   }
 
   public void run(List<String> files) {
-    System.out.println("MyDOM - Run: ");
+    System.out.println("MyDOM:\tStart");
+    System.out.print("\tComputing:\t[");
     for (String file : files) {
       loadXMLFile(file);
     }
+    System.out.print("]");
     System.out.println();
+    System.out.print("\tWriting:\t\t[");
     writeCSVFile(items);
     writeCSVFile(users);
     writeCSVFile(bids);
     writeCSVFile(locations);
     writeCSVFile(categories);
     writeCSVFile(itemsCategories);
+    System.out.print("]");
     System.out.println();
+    System.out.println("MyDOM:\tStop");
   }
 
   private void loadXMLFile(String file) {
-    System.out.print("<");
     try {
       File fXmlFile = new File(file);
       DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -81,13 +85,13 @@ public class MyDOM {
           }
         }
       }
+      System.out.print("<");
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }
   }
 
   private <T extends ICSVFile> void writeCSVFile(Iterable<T> data) {
-    System.out.print(">");
     ICSVFile first = data.iterator().next();
     Path file = Paths.get(rootOutPath + first.getFileName());
     List<String> lines = new ArrayList<>();
@@ -97,6 +101,7 @@ public class MyDOM {
     }
     try {
       Files.write(file, lines, StandardCharsets.UTF_8);
+      System.out.print(">");
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -206,8 +211,8 @@ public class MyDOM {
 
   private double getValueAsDouble(String value) {
     return (!Objects.equals(value, "")) ? Double.parseDouble(value
-        .replace("$", "")
-        .replace(",", "")) : 0;
+      .replace("$", "")
+      .replace(",", "")) : 0;
   }
 
   private int getValueAsInteger(String value) {
@@ -217,8 +222,8 @@ public class MyDOM {
   private String getTimestampAsString(String input) {
     try {
       return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
-          .format(new SimpleDateFormat("MMM-dd-yy HH:mm:ss", Locale.ENGLISH)
-              .parse(input));
+        .format(new SimpleDateFormat("MMM-dd-yy HH:mm:ss", Locale.ENGLISH)
+          .parse(input));
     } catch (Exception e) {
       e.printStackTrace();
     }
