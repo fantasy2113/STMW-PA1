@@ -46,14 +46,14 @@ public class MyDOM {
   public void run(List<String> files) {
     System.out.println();
     System.out.println("MyDOM:\tStart");
-    System.out.println("\tLoaded {ebay-data} from:\t" + System.getenv("EBAY_DATA"));
-    System.out.print("\tComputing:\t[");
+    System.out.println("\tLoaded data:\t" + System.getenv("EBAY_DATA"));
+    System.out.print("\tComputing:\t\t[");
     for (String file : files) {
       loadXMLFile(file);
     }
     System.out.print("]");
     System.out.println();
-    System.out.print("\tWriting:\t\t[");
+    System.out.print("\tWriting:\t\t\t[");
     writeCSVFile(items);
     writeCSVFile(users);
     writeCSVFile(bids);
